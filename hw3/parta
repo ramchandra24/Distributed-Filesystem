@@ -1,0 +1,49 @@
+Part A
+a)	Bigger Files
+Bytes per block = 512
+
+Per inode,
+10 block numbers = 10*512
+1 indirect pointer = 128*512
+1 double-indirect pointer = 128*128*512
+1 triple-indirect pointer = 128*128*128*512
+
+Total file size supported = 512*(10+128+128*128+128*128*128)
+    = 1082201088 bytes
+
+1.1)	As files larger than 1GB size need to be stored, Ben has to –
+
+B. Increase just the number of bytes per block from 512 to 2048 bytes. 
+D. Replace one of the direct block numbers in each inode with an additional
+triple-indirect block number.
+
+1.2)	B. Decreasing the size of a block number from 4 bytes to 3 bytes.
+C. Decreasing the size of a block number from 4 bytes to 2 bytes.
+
+
+b)	EZ Park
+4.1) 
+A. There is a race condition in accesses to available[], which may violate one of the
+correctness specifications when two find_spot ( ) threads run.
+C. There is a race condition in accesses to numcars, which may violate one of the
+correctness specifications when more than one thread updates numcars.
+
+4.3)	The code doesn’t meet its specifications. Suppose a thread acquires a lock, and doesn’t find an available slot, the lock is never released. Even when RELINQUISH_SPOT() is called for a client, the available slots can’t be updated because the lock is not free.
+
+4.4)	The code doesn’t meet the specifications. Suppose all slots are occupied and multiple clients are calling FIND_SPOT(), a client who wants to relinquish the spot may not be able to do so when the lock is being acquired continuously by the clients calling FIND_SPOT().
+
+4.5)	The code doesn’t meet specifications. Consider a case when lock is acquired by a client, it is never released unless one of the clients call RELINQUISH_ SPOT(). Hence, clients may not be able to use available slots.
+
+4.6)	A. The client will not get a response until at least one car relinquishes a spot.
+B. The client may never get a response even when other cars relinquish their
+spots.
+
+4.7)	A. The server may be running multiple active threads on behalf of the same client
+car at any given time.
+D. numcars may be larger than the actual number of cars parked in the parking lot.
+
+4.8)	A. On any thread switch, the operating system saves the values of the PMAR, PC,
+SP, and several registers.
+D. The number of instructions required to switch from one thread to another is
+proportional to the number of bytes currently on the thread’s stack.
+
