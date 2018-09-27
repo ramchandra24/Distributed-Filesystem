@@ -3,6 +3,7 @@ THIS MODULE ACTS AS A INODE NUMBER LAYER. NOT ONLY IT SHARES DATA WITH INODE LAY
 UPDATES. THE INODE TABLE AND INODE NUMBER IS UPDATED IN THE FILE SYSTEM USING THIS LAYER
 '''
 import InodeLayer, config, MemoryInterface, datetime, InodeOps, MemoryInterface
+from test.test_mutants import Parent
 
 
 #HANDLE OF INODE LAYER
@@ -58,10 +59,34 @@ class InodeNumberLayer():
 				return i
 		print("Error InodeNumberLayer: All inode Numbers are occupied!\n")
 
+	def is_file_in_dir(self, inode_number, parent_inode_number):
+		if parent_inode_number != -1:
+			parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+			if not parent_inode:
+				print("ERROR: InodeNumberLayer: Invalid directory")
+				return False
+			if inode_number not in parent_inode.directory:
+				return False
+		return True
+	
+	def is_file(self, inode_number):
+		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		if inode.type == 0:
+			return True
+		return False
+
+	def is_dir(self, inode_number):
+		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		if inode.type == 1:
+			return True
+		return False
+
 
 	#LINKS THE INODE
 	def link(self, inode_number, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
+		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		inode.links += 1
 
 
 	#REMOVES THE INODE ENTRY FROM INODE TABLE
@@ -72,8 +97,28 @@ class InodeNumberLayer():
 	#IMPLEMENTS WRITE FUNCTIONALITY
 	def write(self, inode_number, offset, data, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
+		#=======================================================================
+		# if not self.is_dir(parent_inode_number):
+		# 	print("Error InodeNumberLayer: Invalid directory!")
+		# 	return -1
+		# if not self.is_file(inode_number):
+		# 	print("Error InodeNumberLayer: Invalid File!")
+		# 	return -1
+		#=======================================================================
+		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		return interface.write(inode, offset, data)
 		
 
 	#IMPLEMENTS READ FUNCTIONALITY
 	def read(self, inode_number, offset, length, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
+		#=======================================================================
+		# if not self.is_dir(parent_inode_number):
+		# 	print("Error InodeNumberLayer: Invalid directory!")
+		# 	return -1
+		# if not self.is_file(inode_number):
+		# 	print("Error InodeNumberLayer: Invalid File!")
+		# 	return -1
+		#=======================================================================
+		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		return interface.read(inode, offset, length)

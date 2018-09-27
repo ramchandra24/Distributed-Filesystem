@@ -56,27 +56,81 @@ class FileNameLayer():
 	#IMPLEMENTS READ
 	def read(self, path, inode_number_cwd, offset, length):
 		'''WRITE YOUR CODE HERE'''
+		parent_inode_number = self.LOOKUP(path, inode_number_cwd)
+		parent_inode = interface.INODE_NUMBER_TO_INODE(parent_inode_number) 
+		childname = path.split('/')[-1]
+		if not parent_inode: 
+			print("Error FileNameLayer: Directory not found!")
+			return -1
+		if childname not in parent_inode.directory:
+			print("Error: FileNameLayer: File not found in directory!")
+			return -1
+		inode_number = self.CHILD_INODE_NUMBER_FROM_PARENT_INODE_NUMBER(childname, parent_inode_number)
+		return interface.read(inode_number, offset, length, parent_inode_number)
 
-	
+
 	#IMPLEMENTS WRITE
 	def write(self, path, inode_number_cwd, offset, data):
 		'''WRITE YOUR CODE HERE'''
-
+		parent_inode_number = self.LOOKUP(path, inode_number_cwd)
+		parent_inode = interface.INODE_NUMBER_TO_INODE(parent_inode_number) 
+		childname = path.split('/')[-1]
+		if not parent_inode: 
+			print("Error FileNameLayer: Directory not found!")
+			return -1
+		if childname not in parent_inode.directory:
+			print("Error: FileNameLayer: File not found in directory!")
+			return -1
+		inode_number = self.CHILD_INODE_NUMBER_FROM_PARENT_INODE_NUMBER(childname, parent_inode_number)
+		return interface.write(inode_number, offset, data, parent_inode_number)
+	
+	
 	#HARDLINK
 	def link(self, old_path, new_path, inode_number_cwd):
 		'''WRITE YOUR CODE HERE'''
-
-
+		old_inode_number = self.LOOKUP(old_path, inode_number_cwd)
+		new_inode_number = self.LOOKUP(new_path, inode_number_cwd)
+		
+		old_inode = interface.INODE_NUMBER_TO_INODE(old_inode_number)
+		if True == interface.is_dir(old_inode_number):
+			print("Error FileNameLayer: Directory cannot be linked!")
+			return -1
+		if not old_inode:
+			print("Error FileNameLayer: File not found!")
+			return -1
+		return interface.link(old_inode_number, new_inode_number)
+	
+	
 	#REMOVES THE FILE/DIRECTORY
 	def unlink(self, path, inode_number_cwd):
 		if path == "": 
 			print("Error FileNameLayer: Cannot delete root directory!")
 			return -1
 		'''WRITE YOUR CODE HERE'''
+		inode_number = self.LOOKUP(path, inode_number_cwd)
+		return interface.unlink(inode_number, inode_number_cwd)
+
 
 
 	#MOVE
 	def mv(self, old_path, new_path, inode_number_cwd):
+		
 		'''WRITE YOUR CODE HERE'''
+		old_inode_number = self.LOOKUP(old_path, inode_number_cwd)
+		new_inode_number = self.LOOKUP(new_path, inode_number_cwd)
+		if -1 != new_inode_number:
+			print("Error FileNameLayer: File with new name already exists!")
+			return -1
+		
+		old_inode = interface.INODE_NUMBER_TO_INODE(old_inode_number)
+		if True == interface.is_dir(old_inode_number):
+			print("Error FileNameLayer: Directory cannot be linked!")
+			return -1
+		if not old_inode:
+			print("Error FileNameLayer: File to be moved not found!")
+			return -1
+		new_inode_number = self.new_entry(new_path, inode_number_cwd, old_inode.type)
+		
+		return interface.link(old_inode_number, new_inode_number)
 
 	
