@@ -38,10 +38,15 @@ class FileSystemOperations():
     def mv(self, old_path, new_path):
         interface.mv(old_path, new_path)
 
-
+    def link(self, old_path, new_path):
+        interface.link(old_path, new_path)
+        
     #CHECK STATUS
     def status(self):
         print(MemoryInterface.status())
+        
+    def print_files_and_inodes(self, path):
+        interface.print_files_and_inodes(path)
 
 
 
@@ -53,11 +58,17 @@ if __name__ == '__main__':
     #YOU MAY WRITE YOUR CODE AFTER HERE
 
     my_object.mkdir("/A")
-    my_object.status()
+    my_object.mkdir("/B")
+#    my_object.status()
     my_object.create("/A/1.txt")
-    my_object.write("/A/1.txt", "test data", 0)
+    my_object.write("/A/1.txt", "1test data", 0)
+    #my_object.create("/B/2.txt")
+    #my_object.write("/B/2.txt", "2test data", 0)
+    my_object.link("/A/1.txt", "/B/2.txt")
+    my_object.print_files_and_inodes("/A")
+    my_object.print_files_and_inodes("/B")
     my_object.status()
-    my_object.read("/A/1.txt", 0, 7)
+    
     
     '''Examples:
     my_object.mkdir("/A")
