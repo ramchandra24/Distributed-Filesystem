@@ -67,8 +67,8 @@ class FileNameLayer():
 			return -1
 		inode_number = self.CHILD_INODE_NUMBER_FROM_PARENT_INODE_NUMBER(childname, parent_inode_number)
 		return interface.read(inode_number, offset, length, parent_inode_number)
-
-
+	
+	
 	#IMPLEMENTS WRITE
 	def write(self, path, inode_number_cwd, offset, data):
 		'''WRITE YOUR CODE HERE'''

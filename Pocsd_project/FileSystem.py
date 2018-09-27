@@ -52,6 +52,12 @@ if __name__ == '__main__':
     my_object.status()
     #YOU MAY WRITE YOUR CODE AFTER HERE
 
+    my_object.mkdir("/A")
+    my_object.status()
+    my_object.create("/A/1.txt")
+    my_object.write("/A/1.txt", "test data", 0)
+    my_object.status()
+    my_object.read("/A/1.txt", 0, 7)
     
     '''Examples:
     my_object.mkdir("/A")

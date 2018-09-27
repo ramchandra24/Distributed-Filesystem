@@ -3,7 +3,6 @@ THIS MODULE ACTS AS A INODE NUMBER LAYER. NOT ONLY IT SHARES DATA WITH INODE LAY
 UPDATES. THE INODE TABLE AND INODE NUMBER IS UPDATED IN THE FILE SYSTEM USING THIS LAYER
 '''
 import InodeLayer, config, MemoryInterface, datetime, InodeOps, MemoryInterface
-from test.test_mutants import Parent
 
 
 #HANDLE OF INODE LAYER
@@ -97,28 +96,16 @@ class InodeNumberLayer():
 	#IMPLEMENTS WRITE FUNCTIONALITY
 	def write(self, inode_number, offset, data, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
-		#=======================================================================
-		# if not self.is_dir(parent_inode_number):
-		# 	print("Error InodeNumberLayer: Invalid directory!")
-		# 	return -1
-		# if not self.is_file(inode_number):
-		# 	print("Error InodeNumberLayer: Invalid File!")
-		# 	return -1
-		#=======================================================================
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
-		return interface.write(inode, offset, data)
+		inode = interface.write(inode, offset, data)
+		self.update_inode_table(inode, inode_number)
+		return inode
 		
 
 	#IMPLEMENTS READ FUNCTIONALITY
 	def read(self, inode_number, offset, length, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
-		#=======================================================================
-		# if not self.is_dir(parent_inode_number):
-		# 	print("Error InodeNumberLayer: Invalid directory!")
-		# 	return -1
-		# if not self.is_file(inode_number):
-		# 	print("Error InodeNumberLayer: Invalid File!")
-		# 	return -1
-		#=======================================================================
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
-		return interface.read(inode, offset, length)
+		inode, data =  interface.read(inode, offset, length)
+		self.update_inode_table(inode, inode_number)
+		return data
