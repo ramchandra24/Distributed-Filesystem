@@ -92,11 +92,18 @@ class FileNameLayer():
 		new_inode_number = self.LOOKUP(new_path, inode_number_cwd)
 		
 		old_inode = interface.INODE_NUMBER_TO_INODE(old_inode_number)
-		if True == interface.is_dir(old_inode_number):
-			print("Error FileNameLayer: Directory cannot be linked!")
+		if False == interface.is_file(old_inode_number):
+			print("Error FileNameLayer: Only files can be linked!")
 			return -1
 		if not old_inode:
-			print("Error FileNameLayer: File not found!")
+			print("Error FileNameLayer: File to be linked not found!")
+			return -1
+		if False == interface.is_file(new_inode_number):
+			print("Error FileNameLayer: Only files can be linked!")
+			return -1
+		new_inode = interface.INODE_NUMBER_TO_INODE(new_inode_number)
+		if not new_inode:
+			print("Error FileNameLayer: File to be linked to not found!")
 			return -1
 		return interface.link(old_inode_number, new_inode_number)
 	
@@ -123,11 +130,19 @@ class FileNameLayer():
 			return -1
 		
 		old_inode = interface.INODE_NUMBER_TO_INODE(old_inode_number)
-		if True == interface.is_dir(old_inode_number):
-			print("Error FileNameLayer: Directory cannot be linked!")
+		if False == interface.is_file(old_inode_number):
+			print("Error FileNameLayer: File not valid!")
 			return -1
 		if not old_inode:
 			print("Error FileNameLayer: File to be moved not found!")
+			return -1
+		
+		new_inode = interface.INODE_NUMBER_TO_INODE(new_inode_number)
+		if not new_inode:
+			print("Error FileNameLayer: Directory does not exist!")
+			return -1
+		if False == interface.is_dir(old_inode_number):
+			print("Error FileNameLayer: Directory not valid!")
 			return -1
 		new_inode_number = self.new_entry(new_path, inode_number_cwd, old_inode.type)
 		
