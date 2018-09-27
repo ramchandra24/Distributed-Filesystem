@@ -89,23 +89,28 @@ class FileNameLayer():
 	def link(self, old_path, new_path, inode_number_cwd):
 		'''WRITE YOUR CODE HERE'''
 		old_inode_number = self.LOOKUP(old_path, inode_number_cwd)
-		new_inode_number = self.LOOKUP(new_path, inode_number_cwd)
-		
 		old_inode = interface.INODE_NUMBER_TO_INODE(old_inode_number)
+		if not old_inode:
+			print("Error FileNameLayer: File to be linked does not exist!")
+			return -1
 		if False == interface.is_file(old_inode_number):
 			print("Error FileNameLayer: Only files can be linked!")
 			return -1
-		if not old_inode:
-			print("Error FileNameLayer: File to be linked not found!")
+		newpath_parent_path = new_path[:-1]
+		newpath_parent_inode_number = self.LOOKUP(newpath_parent_path, inode_number_cwd)
+		newpath_parent_inode = interface.INODE_NUMBER_TO_INODE(newpath_parent_inode_number) 
+		linkname = new_path.split('/')[-1]
+		if not newpath_parent_inode: 
+			print("Error FileNameLayer: Directory does not exist!")
 			return -1
-		if False == interface.is_file(new_inode_number):
-			print("Error FileNameLayer: Only files can be linked!")
+		if linkname not in newpath_parent_inode.directory:
+			print("Error FileNameLayer: Link does not exist!")
 			return -1
-		new_inode = interface.INODE_NUMBER_TO_INODE(new_inode_number)
-		if not new_inode:
-			print("Error FileNameLayer: File to be linked to not found!")
-			return -1
-		return interface.link(old_inode_number, new_inode_number)
+		link_inode_number = old_inode_number
+		newpath_parent_inode.directory[linkname] = link_inode_number
+		interface.update_inode_table(newpath_parent_inode, newpath_parent_inode_number)
+		
+		return interface.link(old_inode_number, link_inode_number)
 	
 	
 	#REMOVES THE FILE/DIRECTORY
