@@ -54,21 +54,23 @@ if __name__ == '__main__':
     #DO NOT MODIFY THIS
     Initialize_My_FileSystem()
     my_object = FileSystemOperations()
-    my_object.status()
+    #my_object.status()
     #YOU MAY WRITE YOUR CODE AFTER HERE
 
     my_object.mkdir("/A")
-    my_object.mkdir("/B")
+    #my_object.mkdir("/B")
 #    my_object.status()
     my_object.create("/A/1.txt")
-    my_object.write("/A/1.txt", "1test data", 0)
-    #my_object.create("/B/2.txt")
-    #my_object.write("/B/2.txt", "2test data", 0)
-    my_object.link("/A/1.txt", "/B/2.txt")
-    my_object.print_files_and_inodes("/A")
-    my_object.print_files_and_inodes("/B")
+    my_object.mkdir("/A/B")
+    my_object.mkdir("/A/B/C")
+    my_object.create("/A/B/C/1.txt")
+    my_object.write("/A/1.txt", "test data", 0)
+    my_object.link("/A/1.txt", "/A/B/C/2.txt")
+    my_object.rm("/A/1.txt")
+    my_object.mv("/A/B/C/2.txt", "/A/B/3.txt")
+    my_object.rm("/A/B/C/1.txt")
+    my_object.rm("/A/B/C")
     my_object.status()
-    
     
     '''Examples:
     my_object.mkdir("/A")

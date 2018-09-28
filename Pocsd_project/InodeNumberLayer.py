@@ -85,12 +85,31 @@ class InodeNumberLayer():
 	def link(self, inode_number, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		#Increment links made to the file
 		inode.links += 1
+		#print "Adding link: ", inode.name, " new value :: ", inode.links
+		self.update_inode_table(inode, inode_number)
+		return
 
 
 	#REMOVES THE INODE ENTRY FROM INODE TABLE
 	def unlink(self, inode_number, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
+		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		#If delete is called for directory, make links 0 and delete data blocks
+		if self.is_dir(inode_number):
+			inode.links = 0
+			interface.free_data_block(inode, 0)
+		else:
+			#Decrements links made to the file. If the count is 0, delete the file contents
+			if inode.links > 0:
+				inode.links -= 1
+			if inode.links == 0:
+				print "No link to file. Deleting the file contents"
+				interface.free_data_block(inode, 0)
+		self.update_inode_table(inode, inode_number)
+		#print "Removing link : ", inode.name, " new value :: ", inode.links
+		return
 
 
 	#IMPLEMENTS WRITE FUNCTIONALITY
