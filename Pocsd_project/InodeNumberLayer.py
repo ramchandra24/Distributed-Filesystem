@@ -86,9 +86,12 @@ class InodeNumberLayer():
 		'''WRITE YOUR CODE HERE'''
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
 		#Increment links made to the file
+		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
 		inode.links += 1
-		#print "Adding link: ", inode.name, " new value :: ", inode.links
+		#Update the inode in table
 		self.update_inode_table(inode, inode_number)
+		
+		#self.update_inode_table(parent_inode, parent_inode_number)
 		return
 
 
@@ -97,18 +100,27 @@ class InodeNumberLayer():
 		'''WRITE YOUR CODE HERE'''
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
 		#If delete is called for directory, make links 0 and delete data blocks
+		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+		#Decrement directory links by 2
 		if self.is_dir(inode_number):
-			inode.links = 0
-			interface.free_data_block(inode, 0)
-		else:
-			#Decrements links made to the file. If the count is 0, delete the file contents
+			if inode.links > 2:
+				inode.links -= 1
+			else:
+				inode.links = 0
+		#Decrement links made to the file
+		else:	
 			if inode.links > 0:
 				inode.links -= 1
-			if inode.links == 0:
-				print "No link to file. Deleting the file contents"
-				interface.free_data_block(inode, 0)
-		self.update_inode_table(inode, inode_number)
-		#print "Removing link : ", inode.name, " new value :: ", inode.links
+		#If there are no more links, delete the directory / file contents
+		if inode.links == 0:
+			print "No link to file/directory. Deleting the contents"
+			#Free the memory occupied by inode
+			interface.free_data_block(inode, 0)
+			#Make the inode available for next files/directories
+			self.update_inode_table(inode, 0)
+		else:
+			#Update the links to inode in table
+			self.update_inode_table(inode, inode_number)
 		return
 
 
@@ -116,8 +128,15 @@ class InodeNumberLayer():
 	def write(self, inode_number, offset, data, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		#Cannot write to a directory
+		if self.is_dir(inode_number):
+			print("Error InodeNumberLayer: Only files can be written!")
+			return -1
 		inode = interface.write(inode, offset, data)
+		#Update file and directory inodes in table
 		self.update_inode_table(inode, inode_number)
+		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+		self.update_inode_table(parent_inode, parent_inode_number)
 		return inode
 		
 
@@ -125,6 +144,15 @@ class InodeNumberLayer():
 	def read(self, inode_number, offset, length, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
+		#Cannot read from a directory
+		if self.is_dir(inode_number):
+			print("Error InodeNumberLayer: Only files can be read!")
+			return -1
 		inode, data =  interface.read(inode, offset, length)
+		#parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+
+		#Update file inode in table
 		self.update_inode_table(inode, inode_number)
+		#Update directory modification time
+		#self.update_inode_table(parent_inode, parent_inode_number)
 		return data

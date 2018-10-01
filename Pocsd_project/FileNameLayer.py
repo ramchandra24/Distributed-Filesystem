@@ -57,17 +57,14 @@ class FileNameLayer():
 	def read(self, path, inode_number_cwd, offset, length):
 		'''WRITE YOUR CODE HERE'''
 		parent_inode_number = self.LOOKUP(path, inode_number_cwd)
-		parent_inode = interface.INODE_NUMBER_TO_INODE(parent_inode_number) 
 		childname = path.split('/')[-1]
-		if not parent_inode: 
-			print("Error FileNameLayer: Directory not found!")
-			return -1
-		#If file is not present, return error
-		if childname not in parent_inode.directory:
-			print("Error: FileNameLayer: File not found in directory!")
+		if len(childname) == 0:
+			print("Error FileNameLayer: Invalid file!")
 			return -1
 		#Find the inode number of the file and get data from InodeLayer
 		inode_number = self.CHILD_INODE_NUMBER_FROM_PARENT_INODE_NUMBER(childname, parent_inode_number)
+		if inode_number == -1:
+			return -1
 		return interface.read(inode_number, offset, length, parent_inode_number)
 	
 	
@@ -75,17 +72,14 @@ class FileNameLayer():
 	def write(self, path, inode_number_cwd, offset, data):
 		'''WRITE YOUR CODE HERE'''
 		parent_inode_number = self.LOOKUP(path, inode_number_cwd)
-		parent_inode = interface.INODE_NUMBER_TO_INODE(parent_inode_number) 
 		childname = path.split('/')[-1]
-		if not parent_inode: 
-			print("Error FileNameLayer: Directory not found!")
-			return -1
-		#If file is not present, return error
-		if childname not in parent_inode.directory:
-			print("Error: FileNameLayer: File not found in directory!")
+		if len(childname) == 0:
+			print("Error FileNameLayer: Invalid file!")
 			return -1
 		#Find inode number of the file and pass the data to InodeLayer
 		inode_number = self.CHILD_INODE_NUMBER_FROM_PARENT_INODE_NUMBER(childname, parent_inode_number)
+		if inode_number == -1:
+			return -1
 		return interface.write(inode_number, offset, data, parent_inode_number)
 	
 	#Print all files and directories
@@ -126,7 +120,7 @@ class FileNameLayer():
 		#self.print_files_in_inode(parent_inode)
 		filename = old_path.split('/')[-1]
 		if filename not in parent_inode.directory:
-			print("Error FileNameLayer: File not found!")
+			print("Error FileNameLayer: File/directory not found! : ", filename)
 			return -1
 		linkname = new_path.split('/')[-1]
 		link_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)
@@ -136,11 +130,12 @@ class FileNameLayer():
 			return -1
 		#self.print_files_in_inode(link_parent_inode)
 		if linkname in link_parent_inode.directory:
-			print("Error FileNameLayer: Filename used for link already exists!")
+			print("Error FileNameLayer: Name used for link already exists! : ", filename)
 			return -1
 		#Get file inode number and add it into the link's directory
 		file_inode_number = parent_inode.directory[filename]
 		link_parent_inode.directory[linkname] = file_inode_number
+		#Update the changes to inode table
 		interface.update_inode_table(link_parent_inode, link_parent_inode_number)
 		
 		return interface.link(file_inode_number, parent_inode_number)
@@ -157,7 +152,8 @@ class FileNameLayer():
 		if not parent_inode:
 			print("Error FileNameLayer: Invalid directory!")
 			return -1
-			
+		
+		parent_inode.print_file_metadata()
 		linkname = path.split('/')[-1]
 		#If the link is not found, return error
 		if linkname not in parent_inode.directory:
@@ -168,6 +164,7 @@ class FileNameLayer():
 		link_inode = interface.INODE_NUMBER_TO_INODE(link_inode_number)
 		if True == interface.is_dir(link_inode_number):
 			#if there are no contents in the directory, go ahead, delete it
+			link_inode.print_file_metadata()
 			if link_inode.directory:
 				print("Error FileNameLayer: Only empty directories can be deleted!")
 				return -1
@@ -199,14 +196,19 @@ class FileNameLayer():
 		
 		old_name = old_path.split('/')[-1]
 		inode_number = self.CHILD_INODE_NUMBER_FROM_PARENT_INODE_NUMBER(old_name, old_parent_inode_number)
+		if -1 == inode_number:
+			print ("Error FileNameLayer: Invalid file/directory!")
+			return -1
 		#if the given path is a directory, move all contents
 		if interface.is_dir(inode_number):
-			print("Error FileNameLayer: Cannot move directory!")
-			return -1
-		new_name = new_path.split('/')[-1]
+			print("Moving directory and its contents")
+		
+		#Enter a file/directory with the same name in the new directory i.e make a link to the old inode 
+		#Delete the old entry
+		new_name = old_name
 		#Check if the new name already exists in the directory
 		if new_name in new_parent_inode.directory:
-			print("Error FileNameLayer: File with new name already exists!")
+			print("Error FileNameLayer: File/directory name already exists! : ", new_name)
 			return -1
 		#Link to the new path
 		self.link(old_path, new_path, inode_number_cwd)

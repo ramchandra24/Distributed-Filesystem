@@ -17,6 +17,21 @@ class Table_Inode():
 		self.size = 0 if self.type == 0 else len(self.directory)
 		self.links = 2 if self.type == 1 else 1
 		self.name = ""
+		
+	def print_file_metadata(self):
+		print ""
+		print "Name           : ", self.name
+		print "Type           : ", self.type
+		print "Directory      : ", self.directory
+		print "Block numbers  : ", self.blk_numbers
+		print "Size           : ", self.size
+		print "Links          : ", self.links
+		print "Time created   : ", self.time_created
+		print "Time accessed  : ", self.time_accessed
+		print "Time modified  : ", self.time_modified
+		print ""
+		return
+
 
 
 #INODE STORED IN THE FORM OF ARRAY IN THE MEMORY DEPENDING UPON THE SIZE OF INODE GIVEN
