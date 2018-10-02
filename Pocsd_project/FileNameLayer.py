@@ -112,24 +112,33 @@ class FileNameLayer():
 	#HARDLINK
 	def link(self, old_path, new_path, inode_number_cwd):
 		'''WRITE YOUR CODE HERE'''
-		parent_inode_number = self.LOOKUP(old_path, inode_number_cwd)
-		parent_inode = interface.INODE_NUMBER_TO_INODE(parent_inode_number)
-		if not parent_inode:
-			print("Error FileNameLayer: Invalid file directory!")
-			return -1
-		filename = old_path.split('/')[-1]
-		if len(filename) == 0:
-			print("Error FileNameLayer: Invalid filename!")
-			return -1
-		#Check if the file/directory exists
-		if filename not in parent_inode.directory:
-			print("Error FileNameLayer: File/directory not found! : "), filename
-			return -1
+		#If a link to root is being created
+		if old_path == "":
+			file_inode_number = inode_number_cwd
+			parent_inode_number = inode_number_cwd
+		else:
+			parent_inode_number = self.LOOKUP(old_path, inode_number_cwd)
+			parent_inode = interface.INODE_NUMBER_TO_INODE(parent_inode_number)
+			if not parent_inode:
+				print("Error FileNameLayer: Invalid file directory!")
+				return -1
+			filename = old_path.split('/')[-1]
+			if len(filename) == 0:
+				print("Error FileNameLayer: Invalid file/dir name!")
+				return -1
+			#Check if the file/directory exists
+			if filename not in parent_inode.directory:
+				print("Error FileNameLayer: File/directory not found! : "), filename
+				return -1
+			#Get file inode number and add it into the link's directory
+			file_inode_number = parent_inode.directory[filename]
+			
 		linkname = new_path.split('/')[-1]
 		if len(linkname) == 0:
 			print("Error FileNameLayer: Invalid linkname!")
 			return -1
-		#Check if the link will be placed in root
+		#Check if the link will be placed in root. This case is valid for mv function only
+		#For all other calls '/' is stripped from the path
 		if new_path[0] == '/':
 			link_parent_inode_number = inode_number_cwd
 		else:
@@ -144,8 +153,6 @@ class FileNameLayer():
 		if linkname in link_parent_inode.directory:
 			print("Error FileNameLayer: Name used for link already exists! : "), linkname
 			return -1
-		#Get file inode number and add it into the link's directory
-		file_inode_number = parent_inode.directory[filename]
 		link_parent_inode.directory[linkname] = file_inode_number
 		#Update the changes to inode table
 		interface.update_inode_table(link_parent_inode, link_parent_inode_number)

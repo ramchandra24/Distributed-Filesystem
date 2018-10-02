@@ -87,7 +87,6 @@ class InodeNumberLayer():
 		'''WRITE YOUR CODE HERE'''
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
 		#Increment links made to the file
-		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
 		inode.links += 1
 		#Update the access time
 		inode.time_accessed = datetime.datetime.now()
