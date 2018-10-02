@@ -135,6 +135,7 @@ class FileNameLayer():
 		else:
 			link_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)
 		link_parent_inode = interface.INODE_NUMBER_TO_INODE(link_parent_inode_number)
+		
 		if not link_parent_inode:
 			print("Error FileNameLayer: Invalid link directory!")
 			return -1
@@ -200,14 +201,14 @@ class FileNameLayer():
 			new_parent_inode_number = inode_number_cwd
 		
 		else:
-			new_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)			
 			#Find the parent directory in for the new location
 			if new_path[-1] != '/':
 				new_path = new_path + '/'
+			new_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)
 		
 		old_parent_inode_number = self.LOOKUP(old_path, inode_number_cwd)
 		old_parent_inode = interface.INODE_NUMBER_TO_INODE(old_parent_inode_number)
-		new_parent_inode = interface.INODE_NUMBER_TO_INODE(new_parent_inode_number)			
+		new_parent_inode = interface.INODE_NUMBER_TO_INODE(new_parent_inode_number)
 		
 		print "new parent : ", new_parent_inode.name, new_parent_inode.directory
 		
