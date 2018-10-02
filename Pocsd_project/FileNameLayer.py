@@ -183,11 +183,12 @@ class FileNameLayer():
 		#If the remove is requested for directory, do not remove it before it's empty
 		link_inode = interface.INODE_NUMBER_TO_INODE(link_inode_number)
 		if True == interface.is_dir(link_inode_number):
+			#If there are more than 2 links to a directory, allow removal of link
 			#if there are no contents in the directory, go ahead, delete it
-			#link_inode.print_file_metadata()
-			if link_inode.directory:
+			if link_inode.links == 2 and link_inode.directory:
 				print("Error FileNameLayer: Only empty directories can be deleted!")
 				return -1
+		print "remove " , parent_inode.directory
 		#Remove the entry from link's directory 
 		parent_inode.directory.pop(linkname, None)
 		interface.update_inode_table(parent_inode, parent_inode_number)

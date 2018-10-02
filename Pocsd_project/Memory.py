@@ -3,6 +3,7 @@ THIS IS A MEMORY MODULE ON THE SREVER WHICH ACTS LIKE MEMORY OF FILE SYSTEM. ALL
 THIS MODULE. THE MODULE HAS POINTER TO DISK AND HAS EXACT SAME LAYOUT AS UNIX TYPE FILE SYSTEM.
 '''  
 import config, DiskLayout
+from InodeOps import InodeOperations
 
 
 #POINTER TO DISK
@@ -129,5 +130,9 @@ class Operations():
 					string += "\nDIRECTORY: " + inode[1] + "\n"
 					for x in inode[7]: string += "".join(x[:config.MAX_FILE_NAME_SIZE]) + " || "
 					string += "\n"
+					#print inode
+					import InodeOps
+					tinode = InodeOps.InodeOperations().convert_array_to_table(inode)
+					tinode.print_file_metadata()
 		
 		return string
