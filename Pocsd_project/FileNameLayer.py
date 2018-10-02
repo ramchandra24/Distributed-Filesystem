@@ -210,8 +210,6 @@ class FileNameLayer():
 		old_parent_inode = interface.INODE_NUMBER_TO_INODE(old_parent_inode_number)
 		new_parent_inode = interface.INODE_NUMBER_TO_INODE(new_parent_inode_number)
 		
-		print "new parent : ", new_parent_inode.name, new_parent_inode.directory
-		
 		if not old_parent_inode or not new_parent_inode:
 			print("Error FileNameLayer: Invalid directories for mv!")
 			return -1
@@ -224,6 +222,7 @@ class FileNameLayer():
 		if len(old_name) == 0:
 			print ("Error FileNameLayer: Invalid file/directory!")
 			return -1
+		
 		inode_number = self.CHILD_INODE_NUMBER_FROM_PARENT_INODE_NUMBER(old_name, old_parent_inode_number)
 		if inode_number == -1:
 			print ("Error FileNameLayer: Invalid file/directory!")
@@ -231,11 +230,9 @@ class FileNameLayer():
 		#if the given path is a directory, move all contents
 		if interface.is_dir(inode_number):
 			print("Moving directory and its contents")
-		
 		#Enter a file/directory with the same name in the new directory i.e make a link to the old inode 
 		#Delete the old entry
 		new_name = old_name
-		print new_parent_inode.directory
 		#Check if the new name already exists in the directory
 		if new_name in new_parent_inode.directory:
 			print("Error FileNameLayer: File/directory name already exists! : "), new_name
@@ -251,5 +248,3 @@ class FileNameLayer():
 		self.unlink(old_path, inode_number_cwd)
 		
 		return 
-
-	
