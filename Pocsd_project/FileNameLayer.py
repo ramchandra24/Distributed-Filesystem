@@ -129,7 +129,11 @@ class FileNameLayer():
 		if len(linkname) == 0:
 			print("Error FileNameLayer: Invalid linkname!")
 			return -1
-		link_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)
+		#Check if the link will be placed in root
+		if new_path[0] == '/':
+			link_parent_inode_number = inode_number_cwd
+		else:
+			link_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)
 		link_parent_inode = interface.INODE_NUMBER_TO_INODE(link_parent_inode_number)
 		if not link_parent_inode:
 			print("Error FileNameLayer: Invalid link directory!")
@@ -189,11 +193,23 @@ class FileNameLayer():
 		if old_path == "": 
 			print("Error FileNameLayer: Cannot move root directory!")
 			return -1
-		old_parent_inode_number = self.LOOKUP(old_path, inode_number_cwd)
-		new_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)
+		#If the move path is root
+		if new_path == "":
+			new_path = "/"
+			#Root inode number passed from AbsolutePathLayer
+			new_parent_inode_number = inode_number_cwd
 		
+		else:
+			new_parent_inode_number = self.LOOKUP(new_path, inode_number_cwd)			
+			#Find the parent directory in for the new location
+			if new_path[-1] != '/':
+				new_path = new_path + '/'
+		
+		old_parent_inode_number = self.LOOKUP(old_path, inode_number_cwd)
 		old_parent_inode = interface.INODE_NUMBER_TO_INODE(old_parent_inode_number)
-		new_parent_inode = interface.INODE_NUMBER_TO_INODE(new_parent_inode_number)
+		new_parent_inode = interface.INODE_NUMBER_TO_INODE(new_parent_inode_number)			
+		
+		print "new parent : ", new_parent_inode.name, new_parent_inode.directory
 		
 		if not old_parent_inode or not new_parent_inode:
 			print("Error FileNameLayer: Invalid directories for mv!")
@@ -218,15 +234,14 @@ class FileNameLayer():
 		#Enter a file/directory with the same name in the new directory i.e make a link to the old inode 
 		#Delete the old entry
 		new_name = old_name
+		print new_parent_inode.directory
 		#Check if the new name already exists in the directory
 		if new_name in new_parent_inode.directory:
 			print("Error FileNameLayer: File/directory name already exists! : "), new_name
 			return -1
-		if new_path[-1] != '/':
-			new_path = new_path + '/'
 		new_path = new_path + new_name
 		#If a directory is being moved to another directory inside it
-		if old_path == new_path[:len(old_name)]:
+		if len(new_path) >= len(old_name) and old_path == new_path[:len(old_name)]:
 			print ("Error FileNameLayer: Invalid nesting of directories!")
 			return -1
 		#Link to the new path

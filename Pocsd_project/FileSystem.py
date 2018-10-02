@@ -69,7 +69,7 @@ if __name__ == '__main__':
     #my_object.link("/A/1.txt", "/A/C/2.txt")
     my_object.mkdir("/A/D")
     my_object.status()
-    my_object.mv("/A/D", "/A/C/")
+    my_object.mv("/A/1.txt", "/")
     #my_object.mv("/A/C/B", "/A/D")
     #my_object.mkdir("/D")
     #my_object.rm("/D")

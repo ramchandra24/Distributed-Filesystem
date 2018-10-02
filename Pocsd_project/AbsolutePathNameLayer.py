@@ -70,7 +70,7 @@ class AbsolutePathNameLayer():
 	#MOVE
 	def mv(self, old_path, new_path):
 		inode_number_of_parent = self.GENERAL_PATH_TO_HOME_INODE_NUMBER(old_path)
-		if inode_number_of_parent == -1: 
+		if inode_number_of_parent == -1 or len(new_path) == 0: 
 			print("Error AbsolutePathLayer: Wrong Path Given!\n")
 			return -1
 		interface.mv(old_path[1:], new_path[1:], inode_number_of_parent)
