@@ -89,9 +89,14 @@ class InodeNumberLayer():
 		#Increment links made to the file
 		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
 		inode.links += 1
+		#Update the access time
+		inode.time_accessed = datetime.datetime.now()
 		#Update the inode in table
 		self.update_inode_table(inode, inode_number)
-		#self.update_inode_table(parent_inode, parent_inode_number)
+		#Update the modified time of parent directory
+		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+		parent_inode.time_modified = datetime.datetime.now()
+		self.update_inode_table(parent_inode, parent_inode_number)
 		return
 
 
@@ -99,16 +104,16 @@ class InodeNumberLayer():
 	def unlink(self, inode_number, parent_inode_number):
 		'''WRITE YOUR CODE HERE'''
 		inode = self.INODE_NUMBER_TO_INODE(inode_number)
-		#If delete is called for directory, make links 0 and delete data blocks
-		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+		
 		#Decrement directory links by 2
 		if self.is_dir(inode_number):
 			if inode.links > 2:
 				inode.links -= 1
+			#If only 2 links are remaining, make it 0 on call to unlink
 			else:
 				inode.links = 0
 		#Decrement links made to the file
-		else:	
+		else:
 			if inode.links > 0:
 				inode.links -= 1
 		#If there are no more links, delete the directory / file contents
@@ -120,7 +125,10 @@ class InodeNumberLayer():
 		else:
 			#Update the links to inode in table
 			self.update_inode_table(inode, inode_number)
-		#Return the updated number of links
+		#Update the modified time of parent directory
+		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+		parent_inode.time_modified = datetime.datetime.now()
+		self.update_inode_table(parent_inode, parent_inode_number)
 		return
 
 

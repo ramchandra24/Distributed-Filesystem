@@ -227,7 +227,6 @@ class FileNameLayer():
 		new_path = new_path + new_name
 		#If a directory is being moved to another directory inside it
 		if old_path == new_path[:len(old_name)]:
-			print new_path, old_name
 			print ("Error FileNameLayer: Invalid nesting of directories!")
 			return -1
 		#Link to the new path
