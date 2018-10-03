@@ -148,7 +148,6 @@ class FileNameLayer():
 		if not link_parent_inode:
 			print("Error FileNameLayer: Invalid link directory!")
 			return -1
-		#self.print_files_in_inode(link_parent_inode)
 		#Check if a file/directory by linkname already exists
 		if linkname in link_parent_inode.directory:
 			print("Error FileNameLayer: Name used for link already exists! : "), linkname
@@ -188,7 +187,6 @@ class FileNameLayer():
 			if link_inode.links == 2 and link_inode.directory:
 				print("Error FileNameLayer: Only empty directories can be deleted!")
 				return -1
-		print "remove " , parent_inode.directory
 		#Remove the entry from link's directory 
 		parent_inode.directory.pop(linkname, None)
 		interface.update_inode_table(parent_inode, parent_inode_number)

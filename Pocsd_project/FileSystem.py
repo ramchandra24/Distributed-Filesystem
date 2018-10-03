@@ -44,10 +44,6 @@ class FileSystemOperations():
     #CHECK STATUS
     def status(self):
         print(MemoryInterface.status())
-        
-    def print_files_and_inodes(self, path):
-        interface.print_files_and_inodes(path)
-
 
 
 if __name__ == '__main__':
@@ -69,8 +65,9 @@ if __name__ == '__main__':
     #my_object.mkdir("/A/C/B")
     #my_object.create("/A/C/1.txt")
     #my_object.write("/A/1.txt", "test data cut here", 0)
-    my_object.write("/A/1.txt", "", 15)
-    my_object.read("/A/1.txt", 0, 100)
+    my_object.write("/A/1.txt", "Autodidacticism is sometimes", 10000)
+    my_object.link("/A/1.txt", "/A/2.txt")
+    my_object.read("/A/2.txt", 0, 100)
     #my_object.link("/A/1.txt", "/B/2.txt")
     #my_object.link("/A/1.txt", "/A/C/2.txt")
     #my_object.mkdir("/A/D")

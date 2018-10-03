@@ -197,7 +197,6 @@ class InodeLayer():
             print "ERROR: inode not a file"
             return inode
         block_index, offset_in_block = self.find_block_and_offset(inode, offset, data)
-        print block_index, offset_in_block
         #Check if the block_index is out of range
         if True == self.is_invalid_block_index(block_index):
             print "ERROR: Offset out of range"
@@ -279,7 +278,6 @@ class InodeLayer():
     
     #IMPLEMENTS THE READ FUNCTION 
     def read(self, inode, offset, length):
-        print "new read bruh"
         data_read = []
         if False == inode.is_inode_type_file():
             print "ERROR: inode not a file"
@@ -306,6 +304,3 @@ class InodeLayer():
         self.update_read_time(inode)
         
         return (inode, data_read)
-    
-    
-

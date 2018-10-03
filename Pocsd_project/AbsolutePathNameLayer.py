@@ -74,11 +74,3 @@ class AbsolutePathNameLayer():
 			print("Error AbsolutePathLayer: Wrong Path Given!\n")
 			return -1
 		interface.mv(old_path[1:], new_path[1:], inode_number_of_parent)
-		
-		
-	def print_files_and_inodes(self, path):
-		inode_number_of_parent = self.GENERAL_PATH_TO_HOME_INODE_NUMBER(path)
-		if inode_number_of_parent == -1: 
-			print("Error AbsolutePathLayer: Wrong Path Given!\n")
-			return -1
-		interface.print_files_inodes_in_path(path[1:], inode_number_of_parent)
