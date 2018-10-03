@@ -131,8 +131,8 @@ class Operations():
 					for x in inode[7]: string += "".join(x[:config.MAX_FILE_NAME_SIZE]) + " || "
 					string += "\n"
 					#print inode
-					import InodeOps
-					tinode = InodeOps.InodeOperations().convert_array_to_table(inode)
-					tinode.print_file_metadata()
+					#import InodeOps
+					#tinode = InodeOps.InodeOperations().convert_array_to_table(inode)
+					#tinode.print_file_metadata()
 		
 		return string

@@ -31,7 +31,33 @@ class Table_Inode():
 		print "Time modified  : ", self.time_modified
 		print ""
 		return
+		
+	def is_inode_type_file(self):
+		if self.type == 0 :
+			return True 
+		else :
+			return False
+		
+	def update_accessed_time(self):
+		self.time_accessed = str(datetime.datetime.now())[:19]
+		return
+	
+	def update_modified_time(self):
+		self.time_modified = str(datetime.datetime.now())[:19]
+		return
+	
+	def get_file_size(self):
+		return self.size
+	
+	def get_max_num_of_blocks(self):
+		return config.TOTAL_NO_OF_BLOCKS / config.MAX_NUM_INODES
+	
 
+	def print_inode_blocks(self):
+		print self.blk_numbers
+		
+	def get_inode_blocks(self):
+		return self.blk_numbers
 
 
 #INODE STORED IN THE FORM OF ARRAY IN THE MEMORY DEPENDING UPON THE SIZE OF INODE GIVEN
