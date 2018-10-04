@@ -89,11 +89,12 @@ class InodeNumberLayer():
 		#Increment links made to the file
 		inode.links += 1
 		#Update the access time
-		inode.time_accessed = datetime.datetime.now()
+		#inode.time_accessed = datetime.datetime.now()
 		#Update the inode in table
 		self.update_inode_table(inode, inode_number)
 		#Update the modified time of parent directory
 		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+		#Update directory modification time as a new link is being created in the directory
 		parent_inode.time_modified = datetime.datetime.now()
 		self.update_inode_table(parent_inode, parent_inode_number)
 		return
@@ -126,6 +127,7 @@ class InodeNumberLayer():
 			self.update_inode_table(inode, inode_number)
 		#Update the modified time of parent directory
 		parent_inode = self.INODE_NUMBER_TO_INODE(parent_inode_number)
+		#Update directory modification time as a link is being deleted from the directory
 		parent_inode.time_modified = datetime.datetime.now()
 		self.update_inode_table(parent_inode, parent_inode_number)
 		return
