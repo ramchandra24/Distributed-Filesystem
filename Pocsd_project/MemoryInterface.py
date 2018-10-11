@@ -1,17 +1,43 @@
 '''
 THIS MODULE INTERACTS WITH THE MEMORY
 ''' 
-import time, Memory
+#import time, Memory
+import time
+import xmlrpclib as ClientRPC
+import pickle
+#from xmlrpclib import ServerProxy as ClientRPC
 
 #HANDLE FOR MEMORY OPERATIONS
-filesystem = Memory.Operations()
+#filesystem = Memory.Operations()
+
+
+#------------------------------------------------------------------------------ 
+#----------------------- proxy = ClientRPC.ServerProxy("http://localhost:8000/")
+#--------------------------------- print "3 is even: %s" % str(proxy.is_even(3))
+#----------------------------- print "100 is even: %s" % str(proxy.is_even(100))
+
+Memory = ClientRPC.ServerProxy("http://localhost:8000/", allow_none=True)
+methods = Memory.system.listMethods()
+for method in methods:
+    print method
+try:
+    pdata = [1, 2, 3, 4, 5]
+    dat = pickle.dumps(pdata)
+    ret = Memory.abcdef(dat)
+    #state = Memory.Initialize.__init__()
+    tab = Memory.status()
+    print pickle.loads(tab)
+except ClientRPC.Fault as err:
+    print err
+#filesystem = Memory.Operations.status()
+
 
 
 #REQUEST TO BOOT THE FILE SYSTEM
 def Initialize_My_FileSystem():
     print("File System Initializing......")
     time.sleep(2)
-    state = Memory.Initialize()
+    #state = Memory.Initialize()
     print("File System Initialized!")
 
 

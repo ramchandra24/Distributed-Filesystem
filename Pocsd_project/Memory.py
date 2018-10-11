@@ -5,7 +5,9 @@ THIS MODULE. THE MODULE HAS POINTER TO DISK AND HAS EXACT SAME LAYOUT AS UNIX TY
 import config, DiskLayout
 from InodeOps import InodeOperations
 
-
+import xmlrpclib as ServerRPC
+from SimpleXMLRPCServer import SimpleXMLRPCServer
+import pickle
 #POINTER TO DISK
 sblock = DiskLayout.SuperBlock()			 
 
@@ -32,11 +34,13 @@ class Initialize():
 			sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] = -1
 
 
+
 #OPERATIONS ON FILE SYSTEM
 class Operations():
-
+	
 	#GIVES ADDRESS OF INODE TABLE
-	def addr_inode_table(self):				
+	def addr_inode_table(self):
+		print sblock.ADDR_INODE_BLOCKS
 		return sblock.ADDR_INODE_BLOCKS
 
 
@@ -134,7 +138,25 @@ class Operations():
 					#import InodeOps
 					#tinode = InodeOps.InodeOperations().convert_array_to_table(inode)
 					#tinode.print_file_metadata()
-		
-		return string
+		opstring = pickle.dumps(string)
+		return opstring
+	
+	def abcdef(self, pdata):
+		print "hellos"
+		updata = pickle.loads(pdata)
+		print updata 
+
 	
 	#Hw 4 this goes into server and needs to be changed
+
+print "latest file"
+server = SimpleXMLRPCServer(("localhost", 8000), allow_none=True)
+print "Listening on port 8000..."
+#server.register_instance(Initialize(), "Initialize")
+#server.register_function(Initialize.__init__, "Initialize")
+MemoryInit = Initialize()
+server.register_instance(Operations())
+server.register_introspection_functions()
+server.serve_forever()
+
+
