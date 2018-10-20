@@ -12,7 +12,7 @@ filesystem = Memory.Operations()
 def Initialize_My_FileSystem():
     print("File System Initializing......")
     time.sleep(2)
-    state = Memory.Initialize()
+    Memory.Initialize()
     print("File System Initialized!")
 
 

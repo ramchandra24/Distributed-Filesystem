@@ -71,7 +71,9 @@ class Operations():
 
 
 	#WRITES TO THE DATA BLOCK
-	def update_data_block(self, block_number, block_data):		
+	def update_data_block(self, block_number, block_data):
+		if block_number == -1:
+			return
 		b = sblock.ADDR_DATA_BLOCKS[block_number - sblock.DATA_BLOCKS_OFFSET].block
 		for i in range(0, len(block_data)): b[i] = block_data[i]
 		#print("Memory: Data Copy Completes")
