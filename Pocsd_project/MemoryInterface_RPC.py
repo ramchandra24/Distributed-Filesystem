@@ -130,7 +130,7 @@ class Operations():
             print ("MemoryInterface_RPC Error: "), error
         return ""
 
-obj = Operations()
-b = obj.get_valid_data_block()
-obj.update_data_block(-1, "hello world!")
-print obj.status()
+#------------------------------------------------------------ obj = Operations()
+#------------------------------------------------ b = obj.get_valid_data_block()
+#------------------------------------- obj.update_data_block(-1, "hello world!")
+#------------------------------------------------------------ print obj.status()
