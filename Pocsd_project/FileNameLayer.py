@@ -37,8 +37,11 @@ class FileNameLayer():
 	#PLEASE DO NOT MODIFY
 	#MAKES NEW ENTRY OF INODE
 	def new_entry(self, path, inode_number_cwd, type):
+		import time
+		start_time = time.time()
 		if path == '/': #SPECIAL CASE OF INITIALIZING FILE SYSTEM
 			interface.new_inode_number(type, inode_number_cwd, "root")
+			#print ("Time to create root: "), (time.time() - start_time)
 			return True
 		parent_inode_number = self.LOOKUP(path, inode_number_cwd)
 		parent_inode = interface.INODE_NUMBER_TO_INODE(parent_inode_number) 
@@ -51,6 +54,7 @@ class FileNameLayer():
 		if child_inode_number != -1:
 			parent_inode.directory[childname] = child_inode_number
 			interface.update_inode_table(parent_inode, parent_inode_number)
+		#print ("Time to create file: "), (time.time() - start_time)
 
 
 	#IMPLEMENTS READ
