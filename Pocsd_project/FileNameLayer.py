@@ -15,6 +15,8 @@ mapper = RaidController.RaidController()
 class FileNameLayer():
 	
 	def __init__(self):
+		port_begin = raw_input("Hey Vipul, Enter port number")
+		config.SERVER_PORT_BEGIN = port_begin
 		self.NUM_OF_INTERFACES = config.NUM_OF_SERVERS
 		self.interface = [None] * self.NUM_OF_INTERFACES
 		for i in range(self.NUM_OF_INTERFACES):

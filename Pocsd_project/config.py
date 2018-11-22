@@ -13,6 +13,5 @@ MAX_FILE_NAME_SIZE = 8
 # Project definitions
 NUM_OF_SERVERS = 4
 SERVER_PORT_BEGIN = 8000
-SER_NUM = 8000
 
 
