@@ -2,7 +2,7 @@
 THIS MODULE INTERACTS WITH THE MEMORY
 ''' 
 import time
-import MemoryInterface_RPC as Memory
+import Mapping as Memory
 
 #HANDLE FOR MEMORY OPERATIONS
 filesystem = Memory.Operations()
