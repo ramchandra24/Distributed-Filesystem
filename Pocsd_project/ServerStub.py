@@ -1,6 +1,6 @@
 from SimpleXMLRPCServer import SimpleXMLRPCServer
 import threading
-import subprocess
+from multiprocessing import Process
 import Memory_RPC as Memory
 import config
 
@@ -25,15 +25,22 @@ for server_num in range(config.NUM_OF_SERVERS):
     print "spawning server ", server_num
     server = RaidServer(server_port)
     #server_handle[server_num] = threading.Thread(target=RaidServer, args = (server_port, ))
-    server_handle[server_num] = subprocess.Popen(server.start_server())
-    server_port = server_port + 1
+    server_handle[server_num] = Process(target = server.start_server, args=())
+    #server_handle[server_num].daemon = True
+    server_port += 1
     #server_handle.daemon = True
     #server_handle[server_num].start()
 
+print "after process "
 for server_num in range(config.NUM_OF_SERVERS):
     #server_handle[server_num].server_close();
-    server_handle[server_num].subprocess.wait()
+    server_handle[server_num].run()
 
+print "After start"
+
+for server_num in range(config.NUM_OF_SERVERS):
+    #server_handle[server_num].server_close();
+    server_handle[server_num].join()
 
 #for server_num in range(config.NUM_OF_SERVERS):
 #    server_handle.join();
