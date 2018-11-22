@@ -8,16 +8,23 @@ import pickle as Serdes
 from pickle import PickleError
 from socket import error as SocketError
 
+import config
+
 class Initialize():
     def __init__(self):
         print "Initializing memory on RPC"
 
 #OPERATIONS ON FILE SYSTEM
 class Operations():
-    def __init__(self):
+    def __init__(self, server_num):
         #POINTER TO SERVER OBJECT
         try:
-            self.memory_server = ClientRPC.ServerProxy("http://localhost:8000/", allow_none=True)
+            port_num = server_num
+            server = "http://localhost:" + str(port_num) + "/"
+            print
+            print server
+            print
+            self.memory_server = ClientRPC.ServerProxy(server, allow_none=True)
         except (ClientError, SocketError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions

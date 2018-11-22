@@ -13,8 +13,8 @@ from socket import error as SocketError
 #OPERATIONS ON FILE SYSTEM
 class Operations():
     def __init__(self):
-        #POINTER TO MEMORY OBJECT
         Memory.Initialize()
+        #POINTER TO MEMORY OBJECT
         self.memory_obj = Memory.Operations()
 
     #GIVES ADDRESS OF INODE TABLE

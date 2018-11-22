@@ -4,11 +4,28 @@ IT RECIEVES INPUT AS PATH (WITHOUT INITIAL '/'). THE LAYER IMPLEMENTS LOOKUP TO 
 PARENTS INODE NUMBER IS FIRST EXTRACTED BY LOOKUP AND THEN CHILD INODE NUMBER BY RESPECTED FUNCTION AND BOTH OF THEM ARE UPDATED
 '''
 import InodeNumberLayer
+import config
+import RaidController
 
 #HANDLE OF INODE NUMBER LAYER
-interface = InodeNumberLayer.InodeNumberLayer()
+#interface = InodeNumberLayer.InodeNumberLayer()
+mapper = RaidController.RaidController()
+
 
 class FileNameLayer():
+	
+	def __init__(self):
+		self.NUM_OF_INTERFACES = config.NUM_OF_SERVERS
+		self.interface = [None] * self.NUM_OF_INTERFACES
+		for i in range(self.NUM_OF_INTERFACES):
+			self.interface[i] = InodeNumberLayer.InodeNumberLayer(i)
+		return
+	
+	def status(self):
+		str = ''
+		for i in range(self.NUM_OF_INTERFACES):
+			str += self.interface[i].status()
+		return str
 
 	#PLEASE DO NOT MODIFY
 	#RETURNS THE CHILD INODE NUMBER FROM THE PARENTS INODE NUMBER
@@ -258,3 +275,7 @@ class FileNameLayer():
 		self.unlink(old_path, inode_number_cwd)
 		
 		return 
+	
+	
+obj = FileNameLayer()
+print (obj.status())

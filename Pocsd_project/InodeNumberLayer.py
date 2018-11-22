@@ -6,10 +6,14 @@ import InodeLayer, config, MemoryInterface, datetime, InodeOps, MemoryInterface
 from datetime import date
 
 
-#HANDLE OF INODE LAYER
-interface = InodeLayer.InodeLayer()
-
 class InodeNumberLayer():
+	def __init__(self, server_num):
+		#HANDLE OF INODE LAYER
+		self.interface = InodeLayer.InodeLayer(server_num)
+		return
+
+	def status(self):
+		return self.interface.status()
 
 	#PLEASE DO NOT MODIFY
 	#ASKS FOR INODE FROM INODE NUMBER FROM MemoryInterface.(BLOCK LAYER HAS NOTHING TO DO WITH INODES SO SEPERTAE HANDLE)
@@ -27,7 +31,7 @@ class InodeNumberLayer():
 		if not inode:
 			print("Error InodeNumberLayer: Wrong Inode Number! \n")
 			return -1
-		return interface.read(inode, offset, length)
+		return self.interface.read(inode, offset, length)
 
 
 	#PLEASE DO NOT MODIFY
@@ -53,7 +57,7 @@ class InodeNumberLayer():
 				return -1
 		for i in range(0, config.MAX_NUM_INODES):
 			if self.INODE_NUMBER_TO_INODE(i) == False: #FALSE INDICTES UNOCCUPIED INODE ENTRY HENCE, FREEUMBER
-				inode = interface.new_inode(type)
+				inode = self.interface.new_inode(type)
 				inode.name = name
 				self.update_inode_table(inode, i)
 				return i
@@ -119,7 +123,7 @@ class InodeNumberLayer():
 		#If there are no more links, delete the directory / file contents
 		if inode.links == 0:
 			#Free the memory occupied by inode
-			interface.free_data_block(inode, 0)
+			self.interface.free_data_block(inode, 0)
 			#Make the inode available for next file/directory
 			self.update_inode_table(0, inode_number)
 		else:
@@ -141,7 +145,7 @@ class InodeNumberLayer():
 		if self.is_dir(inode_number):
 			print("Error InodeNumberLayer: Only files can be written!")
 			return -1
-		inode = interface.write(inode, offset, data)
+		inode = self.interface.write(inode, offset, data)
 		#Update file inode in table
 		self.update_inode_table(inode, inode_number)
 		#Update directory access time, modification time into inode table
@@ -160,7 +164,7 @@ class InodeNumberLayer():
 		if self.is_dir(inode_number):
 			print("Error InodeNumberLayer: Only files can be read!")
 			return -1
-		inode, data =  interface.read(inode, offset, length)
+		inode, data =  self.interface.read(inode, offset, length)
 		#Update file inode in table
 		self.update_inode_table(inode, inode_number)
 		#Update directory access time into inode table

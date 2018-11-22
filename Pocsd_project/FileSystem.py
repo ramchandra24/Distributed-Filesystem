@@ -1,4 +1,5 @@
 import MemoryInterface, AbsolutePathNameLayer
+import FileNameLayer
 
 def Initialize_My_FileSystem():
     MemoryInterface.Initialize_My_FileSystem()
@@ -43,7 +44,8 @@ class FileSystemOperations():
         
     #CHECK STATUS
     def status(self):
-        print(MemoryInterface.status())
+        #print(MemoryInterface.status())
+        print(FileNameLayer.status())
 
 
 if __name__ == '__main__':
