@@ -45,7 +45,8 @@ class Operations():
 
 	#REQUEST TO MAKE BLOCKS RESUABLE AGAIN FROM SERVER
 	def free_data_block(self, block_number):
-		filesystem.free_data_block((block_number))
+		for server,server_blknum in bigdict[block_number]:
+			filesystem.free_data_block(server,server_blknum)
 
 
 	#REQUEST TO WRITE DATA ON THE THE SERVER
