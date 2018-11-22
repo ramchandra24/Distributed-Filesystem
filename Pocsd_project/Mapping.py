@@ -25,7 +25,11 @@ class Operations():
 
 	#REQUEST THE DATA FROM THE SERVER
 	def get_data_block(self, block_number):
-		return ''.join(filesystem.get_data_block(block_number))
+		for server,server_blknum in bigdict[block_number].items():
+			try:
+				return ''.join(filesystem.get_data_block(block_number))
+			except Exception as error:
+				print "server: " + server + " is not working"
 
 
 	#REQUESTS THE VALID BLOCK NUMBER FROM THE SERVER 
@@ -46,12 +50,13 @@ class Operations():
 	#REQUEST TO MAKE BLOCKS RESUABLE AGAIN FROM SERVER
 	def free_data_block(self, block_number):
 		for server,server_blknum in bigdict[block_number].items():
-			filesystem.free_data_block(server,server_blknum)
+			filesystem.free_data_block(server, server_blknum)
 
 
 	#REQUEST TO WRITE DATA ON THE THE SERVER
 	def update_data_block(self, block_number, block_data):
-		filesystem.update_data_block(block_number, block_data)
+		for server,server_blknum in bigdict[block_number].items():
+			filesystem.update_data_block(server, server_blknum, block_data)
 
 
 	#REQUEST TO UPDATE THE UPDATED INODE IN THE INODE TABLE FROM SERVER
