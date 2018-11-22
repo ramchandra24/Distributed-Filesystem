@@ -38,9 +38,9 @@ class Operations():
 		serverB_blknum = filesystem.get_valid_data_block(serverB)
 		smalldict[serverA] = serverA_blknum
 		smalldict[serverB] = serverB_blknum
-		bigdict[clientblknum] = smalldict
+		bigdict[client_blknum_counter] = smalldict
 		self.client_blknum_counter = self.client_blknum_counter + 1
-		return (client_blknum_counter)
+		return client_blknum_counter
 
 
 	#REQUEST TO MAKE BLOCKS RESUABLE AGAIN FROM SERVER
