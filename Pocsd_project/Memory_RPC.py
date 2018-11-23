@@ -13,9 +13,9 @@ from socket import error as SocketError
 #OPERATIONS ON FILE SYSTEM
 class Operations():
     def __init__(self):
-        Memory.Initialize()
         #POINTER TO MEMORY OBJECT
         self.memory_obj = Memory.Operations()
+        self.memory_obj.initialize()
 
     #GIVES ADDRESS OF INODE TABLE
     def addr_inode_table(self):
