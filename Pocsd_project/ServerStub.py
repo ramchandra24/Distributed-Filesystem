@@ -7,7 +7,6 @@ import config
 class RaidServer():
     def __init__(self, server_port):
         self.memory = Memory.Operations()
-        self.memory.initialize()
         self.server = SimpleXMLRPCServer(("localhost", server_port), allow_none=True)
         print "Listening on localhost : port ", server_port
         #Register all functions required for RPC
