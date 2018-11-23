@@ -53,15 +53,16 @@ class MemoryInterface():
 
 
 a = MemoryInterface(8000)
-b = MemoryInterface(8002)
+b = MemoryInterface(8001)
 
 ablock = a.get_valid_data_block()
 print "a block number", ablock
 a.update_data_block(ablock, "server 1")
+print a.status()
 
 bblock = b.get_valid_data_block()
 print "b block number", bblock
 b.update_data_block(bblock, "server 2")
 
-print a.status()
+#print a.status()
 print b.status()

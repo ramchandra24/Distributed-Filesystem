@@ -19,11 +19,9 @@ class Operations():
     def __init__(self, server_num):
         #POINTER TO SERVER OBJECT
         try:
-            port_num = config.SERVER_PORT_BEGIN + server_num
+            port_num = server_num
             server = "http://localhost:" + str(port_num) + "/"
-            print
             print server
-            print
             self.memory_server = ClientRPC.ServerProxy(server, allow_none=True)
         except (ClientError, SocketError) as error:
             print ("MemoryInterface_RPC Error: "), error
