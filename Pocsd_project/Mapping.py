@@ -8,7 +8,7 @@ numservers = config.NUM_OF_SERVERS
 class Operations():
 	def __init__(self):
 		self.bigdict = {}
-		self.client_blknum_counter = 11
+		self.client_blknum_counter = 10
 	
 	#REQUEST TO BOOT THE FILE SYSTEM
 	def Initialize_My_FileSystem(self):
@@ -24,14 +24,13 @@ class Operations():
 	def inode_number_to_inode(self, inode_number):
 		for server_number in range(0, numservers):
 			inode = filesystem.inode_number_to_inode(server_number, inode_number)
-# 			print inode
 			if inode: 
 				return inode
 
 
 	#REQUEST THE DATA FROM THE SERVER
 	def get_data_block(self, block_number):
-		for server_number, server_blknum in bigdict[block_number].items():
+		for server_number, server_blknum in self.bigdict[block_number].items():
 			data = filesystem.get_data_block(server_number, server_blknum)
 			if len(data) != 0: 
 				return ''.join(data)
@@ -39,6 +38,7 @@ class Operations():
 
 	#REQUESTS THE VALID BLOCK NUMBER FROM THE SERVER 
 	def get_valid_data_block(self):
+		self.client_blknum_counter += 1
 		smalldict = {}
 		server_offset = self.client_blknum_counter % numservers
 		serverA_number = server_offset
@@ -48,13 +48,12 @@ class Operations():
 		smalldict[serverA_number] = serverA_blknum
 		smalldict[serverB_number] = serverB_blknum
 		self.bigdict[self.client_blknum_counter] = smalldict
-		self.client_blknum_counter = self.client_blknum_counter + 1
 		return self.client_blknum_counter
 
 
 	#REQUEST TO MAKE BLOCKS RESUABLE AGAIN FROM SERVER
 	def free_data_block(self, block_number):
-		for server_number, server_blknum in bigdict[block_number].items():
+		for server_number, server_blknum in self.bigdict[block_number].items():
 			filesystem.free_data_block(server_number, server_blknum)
 		return
 
@@ -69,7 +68,6 @@ class Operations():
 	#REQUEST TO UPDATE THE UPDATED INODE IN THE INODE TABLE FROM SERVER
 	def update_inode_table(self, inode, inode_number):
 		for server_number in range(0, numservers):
-# 			print server_number
 			filesystem.update_inode_table(server_number, inode, inode_number)
 		return
 
