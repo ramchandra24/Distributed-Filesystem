@@ -43,6 +43,8 @@ class Operations():
 		server_offset = self.client_blknum_counter % numservers
 		serverA_number = server_offset
 		serverB_number = server_offset + 1
+		if serverA_number == 3:
+			serverB_number = 0
 		serverA_blknum = filesystem.get_valid_data_block(serverA_number)
 		serverB_blknum = filesystem.get_valid_data_block(serverB_number)
 		smalldict[serverA_number] = serverA_blknum
@@ -60,7 +62,8 @@ class Operations():
 
 	#REQUEST TO WRITE DATA ON THE THE SERVER
 	def update_data_block(self, block_number, block_data):
-		for server_number, server_blknum in self.bigdict[block_number].items():
+		print self.bigdict[block_number].items()
+		for server_number, server_blknum in self.bigdict[block_number].items(): 
 			filesystem.update_data_block(server_number, server_blknum, block_data)
 		return
 
