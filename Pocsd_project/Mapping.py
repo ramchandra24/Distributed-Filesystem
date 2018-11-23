@@ -62,7 +62,6 @@ class Operations():
 
 	#REQUEST TO WRITE DATA ON THE THE SERVER
 	def update_data_block(self, block_number, block_data):
-		print self.bigdict[block_number].items()
 		for server_number, server_blknum in self.bigdict[block_number].items(): 
 			filesystem.update_data_block(server_number, server_blknum, block_data)
 		return
