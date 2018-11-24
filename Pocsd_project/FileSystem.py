@@ -44,8 +44,8 @@ class FileSystemOperations():
         
     #CHECK STATUS
     def status(self):
-        #print(MemoryInterface.status())
-        print(FileNameLayer.status())
+        print(MemoryInterface.status())
+        #print(FileNameLayer.status())
 
 
 if __name__ == '__main__':
@@ -56,20 +56,24 @@ if __name__ == '__main__':
     #YOU MAY WRITE YOUR CODE AFTER HERE
 
     my_object.mkdir("/A")
-    #my_object.mkdir("/B")
-#    my_object.status()
+    my_object.mkdir("/B")
+    #my_object.status()
     my_object.create("/A/1.txt")
     my_object.create("/2.txt")
-    my_object.mkdir("/A/C")
-    my_object.link("/", "/A/C/4.txt")
-    my_object.link("/A/C/4.txt", "/A/C/5.txt")
-    my_object.rm("/A/C/5.txt")
+    #my_object.mkdir("/A/C")
+    #my_object.link("/", "/A/C/4.txt")
+    #my_object.link("/A/C/4.txt", "/A/C/5.txt")
+    #my_object.status()
+    #my_object.rm("/A/C/5.txt")
+    #my_object.status()
     #my_object.mkdir("/A/C/B")
     #my_object.create("/A/C/1.txt")
     #my_object.write("/A/1.txt", "test data cut here", 0)
     my_object.write("/A/1.txt", "Autodidacticism is sometimes", 10)
-    my_object.link("/A/1.txt", "/A/2.txt")
-    my_object.read("/A/2.txt", 0, 100)
+    my_object.write("/A/1.txt", "Autodidacticism is sometimes", 13)
+    #my_object.link("/A/1.txt", "/A/2.txt")
+    my_object.read("/A/1.txt", 0, 100)
+    my_object.status()
     #my_object.link("/A/1.txt", "/B/2.txt")
     #my_object.link("/A/1.txt", "/A/C/2.txt")
     #my_object.mkdir("/A/D")
@@ -89,7 +93,6 @@ if __name__ == '__main__':
     #my_object.rm("/B/2.txt")
     #my_object.rm("/B")
     #my_object.rm("/A")
-    my_object.status()
     
     '''Examples:
     my_object.mkdir("/A")

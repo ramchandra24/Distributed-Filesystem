@@ -36,6 +36,12 @@ for server_num in range(config.NUM_OF_SERVERS):
     #server_handle[server_num].server_close();
     server_handle[server_num].start()
 
+inp = raw_input("Enter k to kill")
+if 'k' == inp: 
+    for server_num in range(config.NUM_OF_SERVERS):
+        #server_handle[server_num].server_close();
+        server_handle[server_num].running = False
+
 
 for server_num in range(config.NUM_OF_SERVERS):
     #server_handle[server_num].server_close();

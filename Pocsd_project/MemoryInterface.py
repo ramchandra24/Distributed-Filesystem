@@ -2,7 +2,7 @@
 THIS MODULE INTERACTS WITH THE MEMORY
 ''' 
 import time
-import Mapping as Memory
+import VirtualBlockLayer as Memory
 
 #HANDLE FOR MEMORY OPERATIONS
 filesystem = Memory.Operations()
@@ -12,7 +12,7 @@ filesystem = Memory.Operations()
 def Initialize_My_FileSystem():
     print("File System Initializing......")
     time.sleep(2)
-#     Memory.Initialize_My_FileSystem()
+    filesystem.Initialize_My_FileSystem()
     print("File System Initialized!")
 
 

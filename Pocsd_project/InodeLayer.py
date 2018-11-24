@@ -4,18 +4,10 @@ THIS MODULE IS RESPONSIBLE FOR PROVIDING ACTUAL BLOCK NUMBERS SAVED IN INODE ARR
 '''
 import datetime, config, BlockLayer, InodeOps
 
-
+#HANDLE OF BLOCK LAYER
+interface = BlockLayer.BlockLayer()
 
 class InodeLayer():
-    
-    def __init__(self, server_num):
-        #HANDLE OF BLOCK LAYER
-        self.interface = BlockLayer.BlockLayer(server_num)
-        return
-    
-    def status(self):
-        return self.interface.status()
-
     #RETURNS BLOCK NUMBER FROM RESPECTIVE INODE DIRECTORY
     def INDEX_TO_BLOCK_NUMBER(self, inode, index):
         if index == len(inode.blk_numbers): return -1
@@ -49,7 +41,7 @@ class InodeLayer():
     #FLUSHES ALL THE BLOCKS OF INODES FROM GIVEN INDEX OF MAPPING ARRAY  
     def free_data_block(self, inode, index):
         for i in range(index, len(inode.blk_numbers)):
-            self.interface.free_data_block(inode.blk_numbers[i])
+            interface.free_data_block(inode.blk_numbers[i])
             inode.blk_numbers[i] = -1
 
     #UPDATE FILE ACCESS TIME
@@ -85,9 +77,8 @@ class InodeLayer():
     
     
     def write_blocks_to_mem(self, block_index, dataBlocks):
-        
         for block in dataBlocks:
-            self.interface.update_data_block(block_index)
+            interface.update_data_block(block_index)
             block_index += 1
         return
     
@@ -96,7 +87,7 @@ class InodeLayer():
     def empty_further_blocks(self, inode, block_index):
         for i in range(block_index, len(inode.blk_numbers)):
             if -1 != inode.blk_numbers[i]:
-                self.interface.free_data_block(inode.blk_numbers[i])
+                interface.free_data_block(inode.blk_numbers[i])
                 inode.blk_numbers[i] = -1
         return
     
@@ -104,7 +95,7 @@ class InodeLayer():
     def find_block_size(self, inode, block_index):
         size_count = 0
         block = []
-        block.extend(self.interface.BLOCK_NUMBER_TO_DATA_BLOCK(inode.blk_numbers[block_index]))
+        block.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(inode.blk_numbers[block_index]))
         for ch in block:
             if ch == '\0':
                 return size_count
@@ -114,9 +105,9 @@ class InodeLayer():
     
     def write_blocks(self, inode, block_index, data_blocks):
         for block in data_blocks:
-            block_number = self.interface.get_valid_data_block()
+            block_number = interface.get_valid_data_block()
             inode.blk_numbers[block_index] = block_number
-            self.interface.update_data_block(block_number, block)
+            interface.update_data_block(block_number, block)
         return
     
     
@@ -150,7 +141,7 @@ class InodeLayer():
             num_of_blocks += 1
 
         for i in range(num_of_blocks):
-            blocks.append(self.interface.get_valid_data_block())
+            blocks.append(interface.get_valid_data_block())
         return blocks
     
     
@@ -160,7 +151,7 @@ class InodeLayer():
 
         #Write data into alloted blocks. Also, update the list of blocks occupied in inode
         for i in range(0, len(data), config.BLOCK_SIZE):
-            self.interface.update_data_block(blocks[block_index], data[i : i + config.BLOCK_SIZE])
+            interface.update_data_block(blocks[block_index], data[i : i + config.BLOCK_SIZE])
             inode.blk_numbers[inode_block_index] = blocks[block_index]
             inode_block_index += 1
             block_index += 1
@@ -190,7 +181,7 @@ class InodeLayer():
         #If the previous element in the already stored data is NULL, then there are gaps between stored data and new data
         if inode.blk_numbers[block_index] != -1:
             stored_data = []
-            stored_data.extend(self.interface.BLOCK_NUMBER_TO_DATA_BLOCK(inode.blk_numbers[block_index]))
+            stored_data.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(inode.blk_numbers[block_index]))
             if stored_data[offset_in_block - 1] == '\0':
                 return True
             else:
@@ -215,7 +206,7 @@ class InodeLayer():
         stored_data = []
         #Copy the already stored data
         if False == self.is_block_empty(inode, block_index):
-            stored_data.extend(self.interface.BLOCK_NUMBER_TO_DATA_BLOCK(inode.blk_numbers[block_index]))
+            stored_data.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(inode.blk_numbers[block_index]))
 
         #Erase blocks starting from block_number until the end
         self.empty_further_blocks(inode, block_index)
@@ -263,20 +254,20 @@ class InodeLayer():
     def read_blocks(self, blocks, offset_in_first_block, offset_in_last_block):
         data = []
         first_block = []
-        first_block.extend(self.interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[0]))
+        first_block.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[0]))
         
         # no need to copy data from beginning in the last block, if there is only one block
         if len(blocks) == 1:
-            data.extend(self.interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[0]))
+            data.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[0]))
             return "".join(data[offset_in_first_block:offset_in_last_block])
         
         #Copy data from the offset position in first block
         data.extend(first_block[offset_in_first_block:])
         for i in range(1, len(blocks)-1):
-            data.extend(self.interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[i]))
+            data.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[i]))
         last_block = []
         #Copy data upto length + offset in last block
-        last_block.extend(self.interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[len(blocks)-1]))
+        last_block.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[len(blocks)-1]))
         data.extend(last_block[:offset_in_last_block])
         
         ret_data = "".join(data)

@@ -18,56 +18,57 @@ class Initialize():
 class Operations():
     def __init__(self):
         #POINTER TO SERVER OBJECT
-        self.startpoint = 8000
+        self.startpoint = config.SERVER_PORT_BEGIN
         self.memory_server = []
         try:
-            for i in range(self.startpoint, self.startpoint+numservers):        		
+            for i in range(self.startpoint, (self.startpoint + numservers)):
                 self.memory_server.append(ClientRPC.ServerProxy("http://localhost:" + str(i) + "/", allow_none=True))
         except (ClientError, SocketError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
+        return
 
     #GIVES ADDRESS OF INODE TABLE
     def addr_inode_table(self):
+        addr_inode_blocks = -1
         try:
             saddr_inode_blocks = self.memory_server.addr_inode_table()
             addr_inode_blocks = Serdes.loads(saddr_inode_blocks)
-            return addr_inode_blocks
         except (ClientError, SocketError, PickleError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
-        return -1
+        return addr_inode_blocks
 
     #RETURNS THE DATA OF THE BLOCK
     def get_data_block(self, server_number, block_number):
+        data_block = None
         try:
             sblock_number = Serdes.dumps(block_number)
             sdata_block = self.memory_server[server_number].get_data_block(sblock_number)
             data_block = Serdes.loads(sdata_block)
-            return data_block
         except (ClientError, SocketError, PickleError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
-        return ""
+        return data_block
 
     #RETURNS THE BLOCK NUMBER OF AVAIALBLE DATA BLOCK  
     def get_valid_data_block(self, server_number):
+        data_block = None
         try:
             sdata_block = self.memory_server[server_number].get_valid_data_block()
             data_block = Serdes.loads(sdata_block)
-            return data_block
         except (ClientError, SocketError, PickleError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
-        return -1
+        return data_block
 
     #REMOVES THE INVALID DATA BLOCK TO MAKE IT REUSABLE
     def free_data_block(self, server_number, block_number):
@@ -109,6 +110,7 @@ class Operations():
 
     #RETURNS THE INODE FROM INODE NUMBER
     def inode_number_to_inode(self, server_number, inode_number):
+        addr_inode_blocks = False
         try:
 #             print server_number, inode_number
             sinode_number = Serdes.dumps(inode_number)
@@ -116,13 +118,13 @@ class Operations():
 #             print saddr_inode_blocks
             addr_inode_blocks = Serdes.loads(saddr_inode_blocks)
 #             print addr_inode_blocks
-            return addr_inode_blocks
+            
         except (ClientError, SocketError, PickleError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
-        return False
+        return addr_inode_blocks
 
 
     #SHOWS THE STATUS OF DISK LAYOUT IN MEMORY

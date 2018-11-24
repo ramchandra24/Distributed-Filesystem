@@ -12,7 +12,7 @@ class Operations():
 		self.sblock = DiskLayout.SuperBlock()
 		return
 	
-#BOOTS THE FILE SYSTEM
+	#BOOTS THE FILE SYSTEM
 	def initialize(self):
 		#ALLOCATING BITMAP BLOCKS 0 AND 1 BLOCKS ARE RESERVED FOR BOOT BLOCK AND SUPERBLOCK
 		self.sblock.BITMAP_BLOCKS_OFFSET, count = 2, 2 
@@ -32,6 +32,7 @@ class Operations():
 		for i in range(0, self.sblock.DATA_BLOCKS_OFFSET): 
 			self.sblock.ADDR_BITMAP_BLOCKS[i / self.sblock.BLOCK_SIZE].block[i % self.sblock.BLOCK_SIZE] = -1
 
+		return
 
 	#GIVES ADDRESS OF INODE TABLE
 	def addr_inode_table(self):
@@ -91,37 +92,36 @@ class Operations():
 	def status(self):
 		counter = 1
 		string = ""
-		string += "\n----------BITMAP: ----------(Block Number : Valid Status)\n"
-		block_number = 0
-		for i in range(2, self.sblock.INODE_BLOCKS_OFFSET):
-			string += "Bitmap Block : " + str(i - 2) + "\n"
-			b = self.sblock.ADDR_BITMAP_BLOCKS[i - self.sblock.BITMAP_BLOCKS_OFFSET].block
-			for j in range(0, len(b)):
-				if j == 20: break   #only to avoid useless data to print
-				string += "\t\t[" + str(block_number + j) + "  :  "  + str(b[j]) + "]  \n"
-			block_number += len(b)
-			if counter == 1: break
-		string += ".....showing just part(20) of 1st bitmap block!\n"
-
-		string += "\n\n----------INODE Blocks: ----------(Inode Number : Inode(Address)\n"
-		inode_number = 0
-		for i in range(self.sblock.INODE_BLOCKS_OFFSET, self.sblock.DATA_BLOCKS_OFFSET):
-			string += "Inode Block : " + str(i - self.sblock.INODE_BLOCKS_OFFSET) + "\n"
-			b = self.sblock.ADDR_INODE_BLOCKS[i - self.sblock.INODE_BLOCKS_OFFSET].block
-			for j in range(0, len(b)):
-				string += "\t\t[" + str(inode_number + j) + "  :  "  + str(bool(b[j])) + "]  \n"
-			inode_number += len(b)
-		
+		# string += "\n----------BITMAP: ----------(Block Number : Valid Status)\n"
+		#------------------------------------------------------ block_number = 0
+		#------------------- for i in range(2, self.sblock.INODE_BLOCKS_OFFSET):
+			#------------------- string += "Bitmap Block : " + str(i - 2) + "\n"
+			# b = self.sblock.ADDR_BITMAP_BLOCKS[i - self.sblock.BITMAP_BLOCKS_OFFSET].block
+			#---------------------------------------- for j in range(0, len(b)):
+				#------ if j == 20: break   #only to avoid useless data to print
+				# string += "\t\t[" + str(block_number + j) + "  :  "  + str(b[j]) + "]  \n"
+			#-------------------------------------------- block_number += len(b)
+			#-------------------------------------------- if counter == 1: break
+		#--------- string += ".....showing just part(20) of 1st bitmap block!\n"
+#------------------------------------------------------------------------------ 
+		# string += "\n\n----------INODE Blocks: ----------(Inode Number : Inode(Address)\n"
+		#------------------------------------------------------ inode_number = 0
+		# for i in range(self.sblock.INODE_BLOCKS_OFFSET, self.sblock.DATA_BLOCKS_OFFSET):
+			# string += "Inode Block : " + str(i - self.sblock.INODE_BLOCKS_OFFSET) + "\n"
+			# b = self.sblock.ADDR_INODE_BLOCKS[i - self.sblock.INODE_BLOCKS_OFFSET].block
+			#---------------------------------------- for j in range(0, len(b)):
+				# string += "\t\t[" + str(inode_number + j) + "  :  "  + str(bool(b[j])) + "]  \n"
+			#-------------------------------------------- inode_number += len(b)
+#------------------------------------------------------------------------------ 
 		string += "\n\n----------DATA Blocks: ----------\n  "
 		counter = 0
 		for i in range(self.sblock.DATA_BLOCKS_OFFSET, self.sblock.TOTAL_NO_OF_BLOCKS):
-			if counter == 25: 
+			if counter == 25:
 				string += "......Showing just part(25) data blocks\n"
 				break
 			string += (str(i) + " : " + "".join(self.sblock.ADDR_DATA_BLOCKS[i - self.sblock.DATA_BLOCKS_OFFSET].block)) + "  "
 			counter += 1
 
-		
 		string += "\n\n----------HIERARCHY: ------------\n"
 		for i in range(self.sblock.INODE_BLOCKS_OFFSET, self.sblock.DATA_BLOCKS_OFFSET):
 			for j in range(0, self.sblock.INODES_PER_BLOCK):
