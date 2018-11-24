@@ -22,7 +22,7 @@ class Operations():
         self.memory_server = []
         try:
             for i in range(self.startpoint, (self.startpoint + numservers)):
-                self.memory_server.append(ClientRPC.ServerProxy("http://localhost:" + str(i) + "/", allow_none=True))
+                self.memory_server.append(ClientRPC.ServerProxy("http://18.224.94.166:" + str(i) + "/", allow_none=True))
         except (ClientError, SocketError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions
