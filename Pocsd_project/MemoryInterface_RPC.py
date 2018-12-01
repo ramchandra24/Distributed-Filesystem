@@ -24,7 +24,6 @@ class Operations():
         #POINTER TO SERVER OBJECT
         self.startpoint = config.SERVER_PORT_BEGIN
         self.memory_server = []
-        self.parity_server = None
         try:
             for i in range(self.startpoint, (self.startpoint + numservers)):
                 print "connecting to port ", i
