@@ -39,23 +39,38 @@ class Operations():
         #    data = filesystem.get_data_block(server_number, server_blknum)
         #    if len(data) != 0: 
         #        return ''.join(data)
-        data1 = []
-        data2 = []
+        print "Data servers : ", server1, ", ",  server2
+        #------------------------------------------------------------ data1 = []
+        #------------------------------------------------------------ data2 = []
+        
+        ret_data = ''
+        ret_data1 = ''
+        data1 = filesystem.get_data_block(server1, block_num1)
+        ret_data1 = data1
+        
+        # if nothing was returned from server 1 try server 2
+        if data1 == '':
+            print "Server ", server1, " not responding"
+            print "Trying to read from server: ", server2
+        
+        ret_data2 = ''
+        data2 = filesystem.get_data_block(server2, block_num2)
+        ret_data2 = data2
+        
+        if data2 == '':
+            print "Server ", server2, " not responding"
+        
+        if ret_data1 == '':
+            ret_data = ret_data2
+        else:
+            ret_data = ret_data1
 
-        data1.append(filesystem.get_data_block(server1, block_num1))
-        data2.append(filesystem.get_data_block(server2, block_num2))
-
-        ret_data = list(data1)
-
-        if not data1:
-            print ("Error VirtualBlockLayer: Server " + str(server1) + " not responding")
-            ret_data = list(data2)
-        if not data2:
-            print ("Error VirtualBlockLayer: Server " + str(server2) + " not responding")
-            ret_data = list(data1)
-
-        if data1 != data2:
-            print ("Error VirtualBlockLayer: Data on servers differ")
+        #--------------------------------------------------------- if not data1:
+            # print ("Error VirtualBlockLayer: Server " + str(server1) + " not responding")
+            #-------------------------------------------- ret_data = list(data2)
+        #--------------------------------------------------------- if not data2:
+            # print ("Error VirtualBlockLayer: Server " + str(server2) + " not responding")
+            #-------------------------------------------- ret_data = list(data1)
         return ''.join(ret_data)
         
         
@@ -63,7 +78,7 @@ class Operations():
     def get_valid_data_block(self):
         self.client_blknum_counter += 1
         #3 copies, 2 to store data and one for parity
-        server_list = [None] * (config.REDUNDANCY_COUNT + 1)
+        server_list = [None] * (config.REDUNDANCY_COUNT)
         server_offset = self.client_blknum_counter % self.numservers
         serverA_number = server_offset
         serverB_number = (serverA_number + 1) % self.numservers
@@ -73,8 +88,10 @@ class Operations():
         
         if -1 == serverA_blknum:
             print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
+            #serverA_number = None
         if -1 == serverB_blknum:
             print ("Error VirtualBlockLayer: Server " + str(serverB_number) + " not responding")
+            #serverB_number = None
         # Push a list of server numbers and block number mappings for each vblock
         server_list[config.DATA_BLOCK_1] = (serverA_number, serverA_blknum)
         server_list[config.DATA_BLOCK_2] = (serverB_number, serverB_blknum)
@@ -116,10 +133,13 @@ class Operations():
         if vblock_number in self.vblock_mapper:
             del self.vblock_mapper[vblock_number]
         
-        status = filesystem.free_data_block(serverA_number, serverA_blknum)
+        status = 0
+        if None != serverA_number:
+            status = filesystem.free_data_block(serverA_number, serverA_blknum)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
-        status = filesystem.free_data_block(serverB_number, serverB_blknum)
+        if None != serverA_number:
+            status = filesystem.free_data_block(serverB_number, serverB_blknum)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(serverB_number) + " not responding")
 
