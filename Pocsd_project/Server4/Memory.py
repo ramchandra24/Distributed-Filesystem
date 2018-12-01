@@ -55,7 +55,7 @@ class Operations():
 
 
 	#RETURNS THE BLOCK NUMBER OF AVAIALBLE DATA BLOCK  
-	def get_valid_data_block(self):			
+	def get_valid_data_block(self):		
 		for i in range(0, sblock.TOTAL_NO_OF_BLOCKS):
 			if sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] == 0:
 				sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] = 1
@@ -95,15 +95,15 @@ class Operations():
 		string = ""
 		string += "\n----------BITMAP: ----------(Block Number : Valid Status)\n"
 		block_number = 0
-		for i in range(2, sblock.INODE_BLOCKS_OFFSET):
-			string += "Bitmap Block : " + str(i - 2) + "\n"
-			b = sblock.ADDR_BITMAP_BLOCKS[i - sblock.BITMAP_BLOCKS_OFFSET].block
-			for j in range(0, len(b)):
-				if j == 20: break   #only to avoid useless data to print
-				string += "\t\t[" + str(block_number + j) + "  :  "  + str(b[j]) + "]  \n"
-			block_number += len(b)
-			if counter == 1: break
-		string += ".....showing just part(20) of 1st bitmap block!\n"
+		#------------------------ for i in range(2, sblock.INODE_BLOCKS_OFFSET):
+			#------------------- string += "Bitmap Block : " + str(i - 2) + "\n"
+			# b = sblock.ADDR_BITMAP_BLOCKS[i - sblock.BITMAP_BLOCKS_OFFSET].block
+			#---------------------------------------- for j in range(0, len(b)):
+				#------ if j == 20: break   #only to avoid useless data to print
+				# string += "\t\t[" + str(block_number + j) + "  :  "  + str(b[j]) + "]  \n"
+			#-------------------------------------------- block_number += len(b)
+			#-------------------------------------------- if counter == 1: break
+		#--------- string += ".....showing just part(20) of 1st bitmap block!\n"
 
 		string += "\n\n----------INODE Blocks: ----------(Inode Number : Inode(Address)\n"
 		inode_number = 0
@@ -124,17 +124,17 @@ class Operations():
 			counter += 1
 
 		
-		string += "\n\n----------HIERARCHY: ------------\n"
-		for i in range(sblock.INODE_BLOCKS_OFFSET, sblock.DATA_BLOCKS_OFFSET):
-			for j in range(0, sblock.INODES_PER_BLOCK):
-				inode = sblock.ADDR_INODE_BLOCKS[i-sblock.INODE_BLOCKS_OFFSET].block[j]
-				if inode and inode[0]:
-					string += "\nDIRECTORY: " + inode[1] + "\n"
-					for x in inode[7]: string += "".join(x[:config.MAX_FILE_NAME_SIZE]) + " || "
-					string += "\n"
-					#print inode
-					#import InodeOps
-					#tinode = InodeOps.InodeOperations().convert_array_to_table(inode)
-					#tinode.print_file_metadata()
+		#------------------- string += "\n\n----------HIERARCHY: ------------\n"
+		# for i in range(sblock.INODE_BLOCKS_OFFSET, sblock.DATA_BLOCKS_OFFSET):
+			#----------------------- for j in range(0, sblock.INODES_PER_BLOCK):
+				# inode = sblock.ADDR_INODE_BLOCKS[i-sblock.INODE_BLOCKS_OFFSET].block[j]
+				#---------------------------------------- if inode and inode[0]:
+					#--------------- string += "\nDIRECTORY: " + inode[1] + "\n"
+					# for x in inode[7]: string += "".join(x[:config.MAX_FILE_NAME_SIZE]) + " || "
+					#-------------------------------------------- string += "\n"
+					#---------------------------------------------- #print inode
+					#------------------------------------------ #import InodeOps
+					# #tinode = InodeOps.InodeOperations().convert_array_to_table(inode)
+					#----------------------------- #tinode.print_file_metadata()
 		
 		return string

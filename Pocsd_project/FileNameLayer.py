@@ -37,8 +37,8 @@ class FileNameLayer():
     #PLEASE DO NOT MODIFY
     #MAKES NEW ENTRY OF INODE
     def new_entry(self, path, inode_number_cwd, type):
-        import time
-        start_time = time.time()
+        #import time
+        #start_time = time.time()
         if path == '/': #SPECIAL CASE OF INITIALIZING FILE SYSTEM
             interface.new_inode_number(type, inode_number_cwd, "root")
             #print ("Time to create root: "), (time.time() - start_time)
@@ -48,13 +48,13 @@ class FileNameLayer():
         childname = path.split('/')[-1]
         if not parent_inode: return -1
         if childname in parent_inode.directory:
-            print("Error FileNameLayer: File already exists!")
+            #print("Error FileNameLayer: File already exists!")
             return -1
         child_inode_number = interface.new_inode_number(type, parent_inode_number, childname)  #make new child
         if child_inode_number != -1:
             parent_inode.directory[childname] = child_inode_number
             interface.update_inode_table(parent_inode, parent_inode_number)
-        #print ("Time to create file: "), (time.time() - start_time)
+        #print ("Time to create node: "), (time.time() - start_time)
 
 
     #IMPLEMENTS READ

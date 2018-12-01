@@ -8,6 +8,10 @@ import pickle as Serdes
 from pickle import PickleError
 from socket import error as SocketError
 import config
+import socket
+# Timeout for broken connections
+socket.setdefaulttimeout(config.SOCKET_TIMEOUT)
+
 numservers = config.NUM_OF_SERVERS
 
 class Initialize():
@@ -20,14 +24,17 @@ class Operations():
         #POINTER TO SERVER OBJECT
         self.startpoint = config.SERVER_PORT_BEGIN
         self.memory_server = []
+        self.parity_server = None
         try:
             for i in range(self.startpoint, (self.startpoint + numservers)):
-                self.memory_server.append(ClientRPC.ServerProxy("http://18.224.94.166:" + str(i) + "/", allow_none=True))
+                print "connecting to port ", i
+                self.memory_server.append(ClientRPC.ServerProxy("http://localhost:" + str(i) + "/", allow_none=True))
         except (ClientError, SocketError) as error:
             print ("MemoryInterface_RPC Error: "), error
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
+
         return
 
     #GIVES ADDRESS OF INODE TABLE
@@ -45,7 +52,8 @@ class Operations():
 
     #RETURNS THE DATA OF THE BLOCK
     def get_data_block(self, server_number, block_number):
-        data_block = None
+        print "block number requested ", block_number
+        data_block = ''
         try:
             sblock_number = Serdes.dumps(block_number)
             sdata_block = self.memory_server[server_number].get_data_block(sblock_number)
@@ -55,11 +63,12 @@ class Operations():
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
-        return data_block
+        #print "data block ", data_block
+        return ''.join(data_block)
 
     #RETURNS THE BLOCK NUMBER OF AVAIALBLE DATA BLOCK  
     def get_valid_data_block(self, server_number):
-        data_block = None
+        data_block = -1
         try:
             sdata_block = self.memory_server[server_number].get_valid_data_block()
             data_block = Serdes.loads(sdata_block)
@@ -72,28 +81,34 @@ class Operations():
 
     #REMOVES THE INVALID DATA BLOCK TO MAKE IT REUSABLE
     def free_data_block(self, server_number, block_number):
+        ret_val = 0
         try:
             sblock_number = Serdes.dumps(block_number)
             self.memory_server[server_number].free_data_block(sblock_number)
         except (ClientError, SocketError, PickleError) as error:
             print ("MemoryInterface_RPC Error: "), error
+            ret_val = -1
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
-        return
+            ret_val = -1
+        return ret_val
 
     #WRITES TO THE DATA BLOCK
     def update_data_block(self, server_number, block_number, block_data):
+        ret_val = 0
         try:
             sblock_number = Serdes.dumps(block_number)
             sblock_data = Serdes.dumps(block_data)
             self.memory_server[server_number].update_data_block(sblock_number, sblock_data)
         except (ClientError, SocketError, PickleError) as error:
             print ("MemoryInterface_RPC Error: "), error
+            ret_val = -1
         #Catch other exceptions
         except Exception as error:
             print ("MemoryInterface_RPC Error: "), error
-        return
+            ret_val = -1
+        return ret_val
 
     #UPDATES INODE TABLE WITH UPDATED INODE
     def update_inode_table(self, server_number, inode, inode_number):
@@ -141,6 +156,6 @@ class Operations():
         return ""
 
 #------------------------------------------------------------ obj = Operations()
-#------------------------------------------------ b = obj.get_valid_data_block()
-#------------------------------------- obj.update_data_block(-1, "hello world!")
-#------------------------------------------------------------ print obj.status()
+#----------------------------------------------- b = obj.get_valid_data_block(2)
+#----------------------------------- obj.update_data_block(2, b, "hello world!")
+#----------------------------------------------------------- print obj.status(2)

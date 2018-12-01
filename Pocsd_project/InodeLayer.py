@@ -199,6 +199,7 @@ class InodeLayer():
         if True == self.is_invalid_block_index(block_index):
             print "ERROR: Offset out of range"
             return inode
+        print "block idx, offset : ", block_index, offset_in_block
         #Check if the new data can be appended to already stored data. If there are gaps in between, print error
         if True == self.is_offset_in_block_invalid(inode, block_index, offset_in_block):
             print "ERROR: Invalid offset. Data in file not continuous"

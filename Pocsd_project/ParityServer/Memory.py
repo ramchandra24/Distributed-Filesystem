@@ -55,7 +55,7 @@ class Operations():
 
 
 	#RETURNS THE BLOCK NUMBER OF AVAIALBLE DATA BLOCK  
-	def get_valid_data_block(self):			
+	def get_valid_data_block(self):		
 		for i in range(0, sblock.TOTAL_NO_OF_BLOCKS):
 			if sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] == 0:
 				sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] = 1
@@ -117,7 +117,7 @@ class Operations():
 		string += "\n\n----------DATA Blocks: ----------\n  "
 		counter = 0
 		for i in range(sblock.DATA_BLOCKS_OFFSET, sblock.TOTAL_NO_OF_BLOCKS):
-			if counter == 25: 
+			if counter == 25:
 				string += "......Showing just part(25) data blocks\n"
 				break
 			string += (str(i) + " : " + "".join(sblock.ADDR_DATA_BLOCKS[i - sblock.DATA_BLOCKS_OFFSET].block)) + "  "

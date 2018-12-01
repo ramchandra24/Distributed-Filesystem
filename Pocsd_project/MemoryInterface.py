@@ -11,7 +11,7 @@ filesystem = Memory.Operations()
 #REQUEST TO BOOT THE FILE SYSTEM
 def Initialize_My_FileSystem():
     print("File System Initializing......")
-    time.sleep(2)
+    #time.sleep(2)
     filesystem.Initialize_My_FileSystem()
     print("File System Initialized!")
 
@@ -48,3 +48,12 @@ def update_inode_table(inode, inode_number):
 #REQUEST FOR THE STATUS OF FILE SYSTEM FROM SERVER
 def status():
     return filesystem.status()
+
+
+#---------------------------------------------------- Initialize_My_FileSystem()
+#------------------------------------------------------------------- while True:
+    #------------------------------------------------- inp = raw_input("prompt")
+    #------------------------------------------------ b = get_valid_data_block()
+    #-------------------------------------- update_data_block(b, "hello world!")
+    #------------------------------------------------------------ if 'k' == inp:
+        #----------------------------------------------------------------- break
