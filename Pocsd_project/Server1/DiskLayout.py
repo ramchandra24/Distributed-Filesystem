@@ -6,7 +6,6 @@ import config
 
 class SuperBlock():
     def __init__(self):
-        print "initing superblock"
         self.TOTAL_NO_OF_BLOCKS = config.TOTAL_NO_OF_BLOCKS                     #DECIDED BY CONFIG FILE
         self.BLOCK_SIZE = config.BLOCK_SIZE                                     #DECIDED BY CONFIG FILE
         self.MAX_NUM_INODES = config.MAX_NUM_INODES                             #DECIDED BY CONFIG FILE

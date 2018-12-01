@@ -124,15 +124,15 @@ class Operations():
 			counter += 1
 
 		
-		#------------------- string += "\n\n----------HIERARCHY: ------------\n"
-		# for i in range(sblock.INODE_BLOCKS_OFFSET, sblock.DATA_BLOCKS_OFFSET):
-			#----------------------- for j in range(0, sblock.INODES_PER_BLOCK):
-				# inode = sblock.ADDR_INODE_BLOCKS[i-sblock.INODE_BLOCKS_OFFSET].block[j]
-				#---------------------------------------- if inode and inode[0]:
-					#--------------- string += "\nDIRECTORY: " + inode[1] + "\n"
-					# for x in inode[7]: string += "".join(x[:config.MAX_FILE_NAME_SIZE]) + " || "
-					#-------------------------------------------- string += "\n"
-					#---------------------------------------------- #print inode
+		string += "\n\n----------HIERARCHY: ------------\n"
+		for i in range(sblock.INODE_BLOCKS_OFFSET, sblock.DATA_BLOCKS_OFFSET):
+			for j in range(0, sblock.INODES_PER_BLOCK):
+				inode = sblock.ADDR_INODE_BLOCKS[i-sblock.INODE_BLOCKS_OFFSET].block[j]
+				if inode and inode[0]:
+					string += "\nDIRECTORY: " + inode[1] + "\n"
+					for x in inode[7]: string += "".join(x[:config.MAX_FILE_NAME_SIZE]) + " || "
+					string += "\n"
+					#print inode
 					#------------------------------------------ #import InodeOps
 					# #tinode = InodeOps.InodeOperations().convert_array_to_table(inode)
 					#----------------------------- #tinode.print_file_metadata()

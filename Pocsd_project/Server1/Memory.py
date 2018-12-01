@@ -13,7 +13,6 @@ sblock = DiskLayout.SuperBlock()
 #BOOTS THE FILE SYSTEM
 class Initialize():
 	def __init__(self):
-		print "initing memory initialize"
 		#ALLOCATING BITMAP BLOCKS 0 AND 1 BLOCKS ARE RESERVED FOR BOOT BLOCK AND SUPERBLOCK
 		sblock.BITMAP_BLOCKS_OFFSET, count = 2, 2 
 		for i in range(0, sblock.TOTAL_NO_OF_BLOCKS / sblock.BLOCK_SIZE):  	
@@ -60,7 +59,6 @@ class Operations():
 		for i in range(0, sblock.TOTAL_NO_OF_BLOCKS):
 			if sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] == 0:
 				sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] = 1
-				print "found valid block ", i
 				return i
 		print("Memory: No valid blocks available")
 		return -1

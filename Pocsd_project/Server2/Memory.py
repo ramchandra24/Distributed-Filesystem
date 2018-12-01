@@ -59,7 +59,6 @@ class Operations():
 		for i in range(0, sblock.TOTAL_NO_OF_BLOCKS):
 			if sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] == 0:
 				sblock.ADDR_BITMAP_BLOCKS[i / sblock.BLOCK_SIZE].block[i % sblock.BLOCK_SIZE] = 1
-				print "found block", i
 				return i
 		print("Memory: No valid blocks available")
 		return -1

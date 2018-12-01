@@ -52,7 +52,6 @@ class Operations():
 
     #RETURNS THE DATA OF THE BLOCK
     def get_data_block(self, server_number, block_number):
-        print "block number requested ", block_number
         data_block = ''
         try:
             sblock_number = Serdes.dumps(block_number)
