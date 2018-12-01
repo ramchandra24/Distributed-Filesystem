@@ -26,11 +26,12 @@ class Operations():
             inode = filesystem.inode_number_to_inode(server_number, inode_number)
             if inode:
                 return inode
+        return False
 
 
     #REQUEST THE DATA FROM THE SERVER
     def get_data_block(self, block_number):
-        self.print_vnodes()
+        #self.print_vnodes()
         server1, block_num1 = self.get_server1_and_block_num(block_number)
         server2, block_num2 = self.get_server2_and_block_num(block_number)
         #parity_server, parity_block = self.vblock_mapper[block_number][config.PARITY_BLOCK]
@@ -38,18 +39,26 @@ class Operations():
         #    data = filesystem.get_data_block(server_number, server_blknum)
         #    if len(data) != 0: 
         #        return ''.join(data)
-        data1 = filesystem.get_data_block(server1, block_num1)
-        data2 = filesystem.get_data_block(server2, block_num2)
-        #parity = filesystem.get_data_block(parity_server, parity_block)
-        if None == data1:
+        data1 = []
+        data2 = []
+
+        data1.append(filesystem.get_data_block(server1, block_num1))
+        data2.append(filesystem.get_data_block(server2, block_num2))
+
+        ret_data = list(data1)
+
+        if not data1:
             print ("Error VirtualBlockLayer: Server " + str(server1) + " not responding")
-        if None == data2:
+            ret_data = list(data2)
+        if not data2:
             print ("Error VirtualBlockLayer: Server " + str(server2) + " not responding")
-            
+            ret_data = list(data1)
+
         if data1 != data2:
             print ("Error VirtualBlockLayer: Data on servers differ")
-        return "".join(data1)
-
+        return ''.join(ret_data)
+        
+        
     #REQUESTS THE VALID BLOCK NUMBER FROM THE SERVER 
     def get_valid_data_block(self):
         self.client_blknum_counter += 1
@@ -66,11 +75,9 @@ class Operations():
             print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
         if -1 == serverB_blknum:
             print ("Error VirtualBlockLayer: Server " + str(serverB_number) + " not responding")
-        #parity_blknum = filesystem.get_valid_data_block(parity_server_num)
         # Push a list of server numbers and block number mappings for each vblock
         server_list[config.DATA_BLOCK_1] = (serverA_number, serverA_blknum)
         server_list[config.DATA_BLOCK_2] = (serverB_number, serverB_blknum)
-        #server_list[config.PARITY_BLOCK] = (parity_server_num, parity_blknum)
         
         # Create a mapping of Virtual Block Number with list of Actual Block Numbers and their servers
         self.vblock_mapper[self.client_blknum_counter] = server_list
@@ -100,17 +107,22 @@ class Operations():
         server, block_num = server_list[config.DATA_BLOCK_2]
         return (server, block_num)
 
-    #REQUEST TO MAKE BLOCKS RESUABLE AGAIN FROM SERVER
-    def free_data_block(self, block_number):
-        server1, block_num1 = self.get_server1_and_block_num(block_number)
-        server2, block_num2 = self.get_server2_and_block_num(block_number)
+
+#REQUEST TO MAKE BLOCKS RESUABLE AGAIN FROM SERVER
+    def free_data_block(self, vblock_number):
+        serverA_number, serverA_blknum = self.get_server1_and_block_num(vblock_number)
+        serverB_number, serverB_blknum = self.get_server2_and_block_num(vblock_number)
+        # Delete the old Virtual block entry in the dictionary 
+        if vblock_number in self.vblock_mapper:
+            del self.vblock_mapper[vblock_number]
         
-        status = filesystem.free_data_block(server1, block_num1)
+        status = filesystem.free_data_block(serverA_number, serverA_blknum)
         if -1 == status:
-            print ("Error VirtualBlockLayer: Server " + str(server1) + " not responding")
-        status = filesystem.free_data_block(server2, block_num2)
+            print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
+        status = filesystem.free_data_block(serverB_number, serverB_blknum)
         if -1 == status:
-            print ("Error VirtualBlockLayer: Server " + str(server2) + " not responding")
+            print ("Error VirtualBlockLayer: Server " + str(serverB_number) + " not responding")
+
         return
 
 
