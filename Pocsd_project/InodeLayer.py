@@ -41,7 +41,8 @@ class InodeLayer():
     #FLUSHES ALL THE BLOCKS OF INODES FROM GIVEN INDEX OF MAPPING ARRAY  
     def free_data_block(self, inode, index):
         for i in range(index, len(inode.blk_numbers)):
-            interface.free_data_block(inode.blk_numbers[i])
+            if inode.blk_numbers[i] != -1:
+                interface.free_data_block(inode.blk_numbers[i])
             inode.blk_numbers[i] = -1
 
     #UPDATE FILE ACCESS TIME

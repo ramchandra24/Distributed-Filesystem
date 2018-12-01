@@ -69,17 +69,37 @@ if __name__ == '__main__':
     my_object = FileSystemOperations()
 
     my_object.create("/1.txt")
+    #my_object.write("/1.txt", "test data", 0)
+    '''my_object.create("/2.txt")
+    my_object.create("/3.txt")
+    my_object.create("/4.txt")
+    
     my_object.write("/1.txt", "test data", 0)
+    my_object.write("/2.txt", "test data", 0)
+    my_object.write("/3.txt", "test data", 0)
+    my_object.write("/4.txt", "test data", 0)
+    
     my_object.read("/1.txt", 0, 5)
+    my_object.read("/2.txt", 0, 5)
+    my_object.read("/3.txt", 0, 5)
+    my_object.read("/4.txt", 0, 5)
+    
+    my_object.write("/1.txt", "test data", 1)
+    my_object.write("/2.txt", "test data", 1)
+    my_object.write("/3.txt", "test data", 1)
+    my_object.write("/4.txt", "test data", 1)
+    
     my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/1.txt", 0, 5)
+    my_object.read("/2.txt", 0, 5)
+    my_object.read("/3.txt", 0, 5)
+    my_object.read("/4.txt", 0, 5)
+    '''
+    
+    my_object.rm("/1.txt")
+    #my_object.rm("/2.txt")
+    #my_object.rm("/3.txt")
+    #my_object.rm("/4.txt")
+
     #my_object.create("/2.txt")
     #my_object.link("/A/1.txt", "/2.txt")
     #my_object.write("/A/1.txt", "Autodidacticism is sometimes", 13)

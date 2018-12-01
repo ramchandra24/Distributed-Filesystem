@@ -39,12 +39,17 @@ class Operations():
         #    data = filesystem.get_data_block(server_number, server_blknum)
         #    if len(data) != 0: 
         #        return ''.join(data)
-        print "Data servers : ", server1, ", ",  server2
+        print "Read from Data Servers : ", server1, ", ",  server2
         #------------------------------------------------------------ data1 = []
         #------------------------------------------------------------ data2 = []
-        
+        stime = config.SLEEP_TIME
+        print "waiting ", stime, " seconds before first read"
+        time.sleep(stime)
         ret_data = ''
         ret_data1 = ''
+        
+        
+        print "Reading from Server: ", server1
         data1 = filesystem.get_data_block(server1, block_num1)
         ret_data1 = data1
         
@@ -53,6 +58,10 @@ class Operations():
             print "Server ", server1, " not responding"
             print "Trying to read from server: ", server2
         
+        print "waiting ", stime, " seconds before second read"
+        time.sleep(stime)
+        
+        print "Reading from Server: ", server2
         ret_data2 = ''
         data2 = filesystem.get_data_block(server2, block_num2)
         ret_data2 = data2
@@ -82,15 +91,19 @@ class Operations():
         server_offset = self.client_blknum_counter % self.numservers
         serverA_number = server_offset
         serverB_number = (serverA_number + 1) % self.numservers
-        parity_server_num = (serverB_number + 1) % self.numservers
+        #parity_server_num = (serverB_number + 1) % self.numservers
         serverA_blknum = filesystem.get_valid_data_block(serverA_number)
         serverB_blknum = filesystem.get_valid_data_block(serverB_number)
         
         if -1 == serverA_blknum:
-            print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
+            #print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
+            serverA_number = (serverB_number + 1) % self.numservers
+            serverA_blknum = filesystem.get_valid_data_block(serverA_number)
             #serverA_number = None
         if -1 == serverB_blknum:
-            print ("Error VirtualBlockLayer: Server " + str(serverB_number) + " not responding")
+            serverB_number = (serverB_number + 1) % self.numservers
+            serverB_blknum = filesystem.get_valid_data_block(serverB_number)
+            #print ("Error VirtualBlockLayer: Server " + str(serverB_number) + " not responding")
             #serverB_number = None
         # Push a list of server numbers and block number mappings for each vblock
         server_list[config.DATA_BLOCK_1] = (serverA_number, serverA_blknum)
@@ -129,20 +142,23 @@ class Operations():
     def free_data_block(self, vblock_number):
         serverA_number, serverA_blknum = self.get_server1_and_block_num(vblock_number)
         serverB_number, serverB_blknum = self.get_server2_and_block_num(vblock_number)
-        # Delete the old Virtual block entry in the dictionary 
-        if vblock_number in self.vblock_mapper:
-            del self.vblock_mapper[vblock_number]
         
+        print "wait delete"
+        time.sleep(5)
         status = 0
+        print "Delete block from Data Servers: ", serverA_number, ", ", serverB_number
         if None != serverA_number:
             status = filesystem.free_data_block(serverA_number, serverA_blknum)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
-        if None != serverA_number:
+        if None != serverB_number:
             status = filesystem.free_data_block(serverB_number, serverB_blknum)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(serverB_number) + " not responding")
 
+        # Delete the old Virtual block entry in the dictionary 
+        if vblock_number in self.vblock_mapper:
+            del self.vblock_mapper[vblock_number]
         return
 
 
@@ -151,15 +167,22 @@ class Operations():
         server1, block_num1 = self.get_server1_and_block_num(block_number)
         server2, block_num2 = self.get_server2_and_block_num(block_number)
         
+        print "Write to Data Servers: ", server1, ", ", server2
+        
+        stime = config.SLEEP_TIME
+        print "waiting ", stime, " seconds before first write"
+        time.sleep(stime)
+        
         status = filesystem.update_data_block(server1, block_num1, block_data)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(server1) + " not responding")
+        
+        print "waiting ", stime, " seconds before second write"
+        time.sleep(stime)
         status = filesystem.update_data_block(server2, block_num2, block_data)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(server2) + " not responding")
         return
-    
-        
 
 
     #REQUEST TO UPDATE THE UPDATED INODE IN THE INODE TABLE FROM SERVER
