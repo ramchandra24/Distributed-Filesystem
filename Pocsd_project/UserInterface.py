@@ -53,6 +53,7 @@ def main():
 
 def mkdir(input_array):
 	if len(input_array) < 2:
+		print "Incorrect input"
 		return
 	try:
 		interface.mkdir(input_array[1])
@@ -64,6 +65,7 @@ def mkdir(input_array):
 #CREATE FILE
 def create(input_array):
 	if len(input_array) < 2:
+		print "Incorrect input"
 		return
 	try:
 		interface.create(input_array[1])
@@ -74,11 +76,12 @@ def create(input_array):
 #WRITE TO FILE
 def write(input_array):
 	if len(input_array) < 4:
+		print "Incorrect input"
 		return
-	print input_array
+	offset = int(input_array[2])
+	data = ' '.join(input_array[3:])
 	try:
-		data = ' '.join(input_array[3:])
-		interface.write(input_array[1], data, int(input_array[2]))
+		interface.write(input_array[1], data, offset)
 	except Exception as error:
 		print error
   
@@ -102,6 +105,7 @@ def read(input_array):
 #DELETE
 def rm(input_array):
 	if len(input_array) < 2:
+		print "Incorrect input"
 		return
 	try:
 		interface.rm(input_array[1])
@@ -112,6 +116,7 @@ def rm(input_array):
 #MOVING FILE
 def mv(input_array):
 	if len(input_array) < 3:
+		print "Incorrect input"
 		return
 	try:
 		interface.mv(input_array[1], input_array[2])
@@ -120,6 +125,7 @@ def mv(input_array):
 
 def link(input_array):
 	if len(input_array) < 3:
+		print "Incorrect input"
 		return
 	try:
 		interface.link(input_array[1], input_array[2])

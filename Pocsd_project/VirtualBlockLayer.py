@@ -170,12 +170,14 @@ class Operations():
         print "waiting ", stime, " seconds before first write"
         time.sleep(stime)
         
+        print "Writing to server ", server1
         status = filesystem.update_data_block(server1, block_num1, block_data)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(server1) + " not responding")
         
         print "waiting ", stime, " seconds before second write"
         time.sleep(stime)
+        print "Writing to server ", server2
         status = filesystem.update_data_block(server2, block_num2, block_data)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(server2) + " not responding")
