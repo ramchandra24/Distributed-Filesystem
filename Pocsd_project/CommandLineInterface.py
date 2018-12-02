@@ -13,7 +13,6 @@ def Initialize():
 		try:
    			if len(startpoint) == 4:
    				config.SERVER_PORT_BEGIN = int(startpoint)
-   				print "new serv", config.SERVER_PORT_BEGIN
    				raw_input("UserInterface: Press enter after starting the servers : ")
    				FileSystem.Initialize_My_FileSystem()
    				break
