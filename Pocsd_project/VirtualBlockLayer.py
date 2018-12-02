@@ -106,7 +106,7 @@ class Operations():
         serverA_blknum = filesystem.get_valid_data_block(serverA_number)
 
         if -1 == serverA_blknum:
-            serverA_number = (serverB_number + 1) % self.numservers
+            serverA_number = (serverA_number + 1) % self.numservers
             serverA_blknum = filesystem.get_valid_data_block(serverA_number)
 
         # Push a list of server numbers and block number mappings for each vblock
@@ -165,10 +165,13 @@ class Operations():
     #REQUEST TO MAKE BLOCKS RESUABLE AGAIN FROM SERVER
     def free_data_block(self, vblock_number):
         serverA_number, serverA_blknum = self.get_server1_and_block_num(vblock_number)
-
+        
         status = 0
-        #print "Delete block from Data Servers: ", serverA_number, ", ", serverB_number
         if None != serverA_number:
+            block_data = filesystem.get_data_block(serverA_number, serverA_blknum)
+            # Update the parity of the block before deleting it
+            self.update_parity_data(serverA_blknum, block_data)
+            # Now that the parity is updated, go ahead delete the block from memory
             status = filesystem.free_data_block(serverA_number, serverA_blknum)
         if -1 == status:
             print ("Error VirtualBlockLayer: Server " + str(serverA_number) + " not responding")
