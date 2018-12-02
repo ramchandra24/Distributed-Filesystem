@@ -3,6 +3,7 @@ import threading
 from multiprocessing import Process
 import Memory_RPC as Memory
 import config
+import sys
 
 class RaidServer():
     def __init__(self, server_port):
@@ -23,20 +24,20 @@ class RaidServer():
         self.server.shutdown()
 
 
-#server_port = config.SERVER_PORT_BEGIN
-server_port = 8001
-
-server = RaidServer(server_port)
-server_handle = threading.Thread(target=server.start_server, args = ( ))
-server_handle.start()
-
-inp = raw_input("Enter k to kill")
-while 'k' != inp:
-    inp = raw_input()
-
-#kill the server
-server.shutdown_server()
-server_handle.running = False
-
+if __name__ == "__main__":
+    #server_port = config.SERVER_PORT_BEGIN
+    server_port = 8001
+    if len(sys.argv) > 1:
+        server_port = int(sys.argv[1])
+    server = RaidServer(server_port)
+    server_handle = threading.Thread(target=server.start_server, args = ( ))
+    server_handle.start()
     
-print "Server ", server_port, " Shutdown"
+    inp = raw_input("Enter k to kill : ")
+    while 'k' != inp:
+        inp = raw_input()
+    
+    #kill the server
+    server.shutdown_server()
+    server_handle.running = False
+    print "Server ", server_port, " Shutdown"

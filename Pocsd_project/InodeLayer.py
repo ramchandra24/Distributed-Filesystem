@@ -41,7 +41,8 @@ class InodeLayer():
     #FLUSHES ALL THE BLOCKS OF INODES FROM GIVEN INDEX OF MAPPING ARRAY  
     def free_data_block(self, inode, index):
         for i in range(index, len(inode.blk_numbers)):
-            interface.free_data_block(inode.blk_numbers[i])
+            if inode.blk_numbers[i] != -1:
+                interface.free_data_block(inode.blk_numbers[i])
             inode.blk_numbers[i] = -1
 
     #UPDATE FILE ACCESS TIME
@@ -199,7 +200,6 @@ class InodeLayer():
         if True == self.is_invalid_block_index(block_index):
             print "ERROR: Offset out of range"
             return inode
-        print "block idx, offset : ", block_index, offset_in_block
         #Check if the new data can be appended to already stored data. If there are gaps in between, print error
         if True == self.is_offset_in_block_invalid(inode, block_index, offset_in_block):
             print "ERROR: Invalid offset. Data in file not continuous"
@@ -246,7 +246,7 @@ class InodeLayer():
         blocks = []
         #Holes can't be present in the middle
         for i in range(block_index, 1+block_index+last_block):
-            if -1 == inode.blk_numbers[i]:
+            if (len(inode.blk_numbers) <= i) or (-1 == inode.blk_numbers[i]):
                 break
             blocks.append(inode.blk_numbers[i])
         return blocks
@@ -255,13 +255,12 @@ class InodeLayer():
     def read_blocks(self, blocks, offset_in_first_block, offset_in_last_block):
         data = []
         first_block = []
-        first_block.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[0]))
-        
         # no need to copy data from beginning in the last block, if there is only one block
         if len(blocks) == 1:
             data.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[0]))
             return "".join(data[offset_in_first_block:offset_in_last_block])
         
+        first_block.extend(interface.BLOCK_NUMBER_TO_DATA_BLOCK(blocks[0]))
         #Copy data from the offset position in first block
         data.extend(first_block[offset_in_first_block:])
         for i in range(1, len(blocks)-1):
@@ -286,6 +285,8 @@ class InodeLayer():
             print "ERROR: Invalid offset for read"
             return (inode, "")
         
+        if length == -1:
+            length = len(inode.blk_numbers) * config.BLOCK_SIZE
         #Get block number of data from offset
         blocks = self.get_blocks_to_read(inode, offset, length)
 
@@ -295,7 +296,7 @@ class InodeLayer():
         offset_in_first_block = self.get_offset_in_block(offset)
         offset_in_last_block = self.get_offset_in_block(offset_in_first_block + length)
         if (offset + length) > (len(blocks) * config.BLOCK_SIZE): 
-            print "ERROR: Data more than file size requested. Read data will be truncated"
+            #print "ERROR: Data more than file size requested. Read data will be truncated"
             offset_in_last_block = (len(blocks) * config.BLOCK_SIZE)
         data_read = self.read_blocks(blocks, offset_in_first_block, offset_in_last_block)
         

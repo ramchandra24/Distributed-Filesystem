@@ -42,6 +42,8 @@ class Operations():
 
 	#RETURNS THE DATA OF THE BLOCK
 	def get_data_block(self, block_number):	
+		if block_number == -1:
+			return None
 		if block_number == 0: print("Memory: Reserved for Boot Block")
 		elif block_number == 1: print("Memory: Reserved for Super Block")
 		elif block_number >= sblock.BITMAP_BLOCKS_OFFSET and block_number < sblock.INODE_BLOCKS_OFFSET:
@@ -65,6 +67,8 @@ class Operations():
 
 	#REMOVES THE INVALID DATA BLOCK TO MAKE IT REUSABLE
 	def free_data_block(self, block_number):  	
+		if block_number == -1:
+			return
 		sblock.ADDR_BITMAP_BLOCKS[block_number / sblock.BLOCK_SIZE].block[block_number % sblock.BLOCK_SIZE] = 0
 		b = sblock.ADDR_DATA_BLOCKS[block_number - sblock.DATA_BLOCKS_OFFSET].block
 		for i in range(0, sblock.BLOCK_SIZE): b[i] = '\0'

@@ -48,12 +48,3 @@ def update_inode_table(inode, inode_number):
 #REQUEST FOR THE STATUS OF FILE SYSTEM FROM SERVER
 def status():
     return filesystem.status()
-
-
-#---------------------------------------------------- Initialize_My_FileSystem()
-#------------------------------------------------------------------- while True:
-    #------------------------------------------------- inp = raw_input("prompt")
-    #------------------------------------------------ b = get_valid_data_block()
-    #-------------------------------------- update_data_block(b, "hello world!")
-    #------------------------------------------------------------ if 'k' == inp:
-        #----------------------------------------------------------------- break
