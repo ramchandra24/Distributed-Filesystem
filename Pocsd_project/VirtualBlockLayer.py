@@ -142,11 +142,8 @@ class Operations():
     def free_data_block(self, vblock_number):
         serverA_number, serverA_blknum = self.get_server1_and_block_num(vblock_number)
         serverB_number, serverB_blknum = self.get_server2_and_block_num(vblock_number)
-        
-        print "wait delete"
-        time.sleep(5)
         status = 0
-        print "Delete block from Data Servers: ", serverA_number, ", ", serverB_number
+        #print "Delete block from Data Servers: ", serverA_number, ", ", serverB_number
         if None != serverA_number:
             status = filesystem.free_data_block(serverA_number, serverA_blknum)
         if -1 == status:

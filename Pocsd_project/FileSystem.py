@@ -2,64 +2,65 @@ import MemoryInterface, AbsolutePathNameLayer
 import FileNameLayer
 import time
 
+#HANDLE TO ABSOLUTE PATH NAME LAYER
+interface = AbsolutePathNameLayer.AbsolutePathNameLayer()
+
 def Initialize_My_FileSystem():
     MemoryInterface.Initialize_My_FileSystem()
     AbsolutePathNameLayer.AbsolutePathNameLayer().new_entry('/', 1)
 
-#HANDLE TO ABSOLUTE PATH NAME LAYER
-interface = AbsolutePathNameLayer.AbsolutePathNameLayer()
 
 class FileSystemOperations():
 
     #MAKES NEW DIRECTORY
     def mkdir(self, path):
-        start_time = time.time()
+        #start_time = time.time()
         interface.new_entry(path, 1)
-        print "Time to make a directory ", (time.time() - start_time)
+        #print "Time to make a directory ", (time.time() - start_time)
 
     #CREATE FILE
     def create(self, path):
-        start_time = time.time()
+        #start_time = time.time()
         interface.new_entry(path, 0)
-        print "Time to create file ", (time.time() - start_time)
+        #print "Time to create file ", (time.time() - start_time)
         
 
     #WRITE TO FILE
     def write(self, path, data, offset=0):
-        start_time = time.time()
+        #start_time = time.time()
         interface.write(path, offset, data)
-        print "Time to write to a file ", (time.time() - start_time)
+        #print "Time to write to a file ", (time.time() - start_time)
       
 
     #READ
     def read(self, path, offset=0, size=-1):
-        start_time = time.time()
+        #start_time = time.time()
         read_buffer = interface.read(path, offset, size)
         if read_buffer != -1: print(path + " : " + read_buffer)
-        print "Time to read file ", (time.time() - start_time)
+        #print "Time to read file ", (time.time() - start_time)
 
     
     #DELETE
     def rm(self, path):
-        start_time = time.time()
+        #start_time = time.time()
         interface.unlink(path)
-        print "Time to remove file/folder  ", (time.time() - start_time)
+        #print "Time to remove file/folder  ", (time.time() - start_time)
 
 
     #MOVING FILE
     def mv(self, old_path, new_path):
-        start_time = time.time()
+        #start_time = time.time()
         interface.mv(old_path, new_path)
-        print "Time to move file/folder ", (time.time() - start_time)
+        #print "Time to move file/folder ", (time.time() - start_time)
 
     def link(self, old_path, new_path):
-        start_time = time.time()
+        #start_time = time.time()
         interface.link(old_path, new_path)
-        print "Time to create link ", (time.time() - start_time)
+        #print "Time to create link ", (time.time() - start_time)
         
     #CHECK STATUS
     def status(self):
-        print(MemoryInterface.status())
+        return (MemoryInterface.status())
         #print(FileNameLayer.status())
 
 
