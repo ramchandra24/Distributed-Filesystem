@@ -75,15 +75,34 @@ if __name__ == '__main__':
     my_object.create("/3.txt")
     my_object.create("/4.txt")
     
-    my_object.write("/1.txt", "tesdf st data", 0)
-    my_object.write("/2.txt", "tefs ast data", 0)
-    my_object.write("/3.txt", "test dataasd fsdf", 0)
-    my_object.write("/4.txt", "tessdfg dsat data", 0)
+    #----------------------------------------------------- my_object.mkdir("/A")
+    #---------------------------------------------- my_object.create("/A/1.txt")
+    #---------------------------------------------- my_object.create("/A/2.txt")
+    #---------------------------------------------- my_object.create("/A/3.txt")
     
-    my_object.read("/1.txt", 0, 5)
-    my_object.read("/2.txt", 0, 5)
-    my_object.read("/3.txt", 0, 5)
-    my_object.read("/4.txt", 0, 5)
+    my_object.write("/1.txt", "this is file 1", 0)
+    my_object.write("/2.txt", "file 2 speaking", 0)
+    my_object.write("/3.txt", "hey from file 3", 0)
+    my_object.write("/4.txt", "hello from 4th file", 0)
+    
+    #------------------------------ my_object.write("/A/1.txt", "adsfa bvjk", 0)
+    #-------------------------- my_object.write("/A/2.txt", "sf uph pfauhj ", 0)
+    #----------------------- my_object.write("/A/3.txt", "sjdfgpoiywerh fsa", 0)
+
+    
+    
+    my_object.read("/1.txt")
+    my_object.read("/2.txt")
+    my_object.read("/3.txt")
+    my_object.read("/4.txt")
+    
+    print "You got 5 seconds to kill any server"
+    time.sleep(5)
+    
+    my_object.read("/1.txt")
+    my_object.read("/2.txt")
+    my_object.read("/3.txt")
+    my_object.read("/4.txt")
     
     #my_object.write("/1.txt", "test data", 1)
     #my_object.write("/2.txt", "test data", 1)

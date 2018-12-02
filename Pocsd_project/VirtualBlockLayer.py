@@ -33,6 +33,51 @@ class Operations():
         return False
 
 
+    def xor_block_data(self, block1_data, block2_data):
+        int_block1_data = []
+        for i in range(len(block1_data)):
+           int_block1_data.append(ord(block1_data[i]))
+        for i in range(len(block1_data), config.BLOCK_SIZE):
+            int_block1_data.append(0)
+        
+        int_block2_data = []
+        for i in range(len(block2_data)):
+           int_block2_data.append(ord(block2_data[i]))
+        for i in range(len(block2_data), config.BLOCK_SIZE):
+            int_block2_data.append(0)
+
+        int_xored_block = [0] * config.BLOCK_SIZE
+        for i in range(config.BLOCK_SIZE):
+            int_xored_block[i] = int_block1_data[i] ^ int_block2_data[i]
+        
+        xored_block = ['\0'] * config.BLOCK_SIZE
+        
+        for i in range(config.BLOCK_SIZE):
+            if int_xored_block[i] != 0:
+                xored_block[i] = chr(int_xored_block[i])
+        #print "parity data str ", new_updated_parity
+        return ''.join(xored_block)
+
+
+    def correct_data_from_parity_server(self, faulty_server, block_number):
+        parity_server_num = config.NUM_OF_SERVERS - 1
+        if block_number in self.parity_mapper:
+            print "Parity to the rescue"
+            parity_blknum = self.parity_mapper[block_number]
+        else:
+            print "Doomed bro. Parity can't help"
+            return
+        
+        parity_block_data = filesystem.get_data_block(parity_server_num, parity_blknum)
+        recovered_block_data = parity_block_data
+        for i in range(self.num_data_servers):
+            if i == faulty_server : continue
+            data_block = filesystem.get_data_block(i, block_number)
+            recovered_block_data = self.xor_block_data(recovered_block_data, data_block)
+        
+        return ''.join(recovered_block_data)
+        
+
     #REQUEST THE DATA FROM THE SERVER
     def get_data_block(self, block_number):
         #self.print_vnodes()
@@ -44,16 +89,18 @@ class Operations():
         print "waiting ", stime, " seconds before first read"
         time.sleep(stime)
         ret_data = ''
-        ret_data1 = ''
         
         print "Reading from Server: ", server1
         data1 = filesystem.get_data_block(server1, block_num1)
-        ret_data1 = data1
         
+        print data1
         # if nothing was returned from server 1 try server 2
         if data1 == '':
             print "Server ", server1, " not responding"
-            print "Trying to read from server: ", server2
+            print "Correcting data with parity server"
+            data1 = self.correct_data_from_parity_server(server1, block_num1)
+        
+        ret_data = data1
         
         #print "waiting ", stime, " seconds before second read"
         #time.sleep(stime)
@@ -221,31 +268,37 @@ class Operations():
         else:
             parity_blknum = filesystem.get_valid_data_block(parity_server_num)
             self.parity_mapper[block_number] = parity_blknum
-            return ''
         
         parity_block_data = filesystem.get_data_block(parity_server_num, block_number)
         
-        if parity_block_data[0] == '\0':
-            curr_parity_data = [0] * config.BLOCK_SIZE
-        else:
-            curr_parity_data = map(int, block_data)
+        #if parity_block_data[0] == '\0':
+        #    curr_parity_data = [0] * config.BLOCK_SIZE
+        #else:
+        #    curr_parity_data = parity_block_data
         
         #print "block data", block_data
-        updated_parity_data = curr_parity_data
-        print "parity data int ", updated_parity_data
+        #updated_parity_data = curr_parity_data
+        #print "parity data int ", updated_parity_data
         
         int_block_data = []
         for i in range(len(block_data)):
            int_block_data.append(ord(block_data[i]))
         for i in range(len(block_data), config.BLOCK_SIZE):
             int_block_data.append(0)
+        
+        int_parity_block_data = []
+        for i in range(len(parity_block_data)):
+           int_parity_block_data.append(ord(parity_block_data[i]))
+        for i in range(len(parity_block_data), config.BLOCK_SIZE):
+            int_parity_block_data.append(0)
 
-        for i in range(len(curr_parity_data)):
-            updated_parity_data[i] = curr_parity_data[i] ^ int_block_data[i]
+        updated_parity_data = [0] * config.BLOCK_SIZE
+        for i in range(config.BLOCK_SIZE):
+            updated_parity_data[i] = int_parity_block_data[i] ^ int_block_data[i]
         
         new_updated_parity = updated_parity_data
         
-        for i in range(len(updated_parity_data)):
+        for i in range(config.BLOCK_SIZE):
             if updated_parity_data[i] != 0:
                 new_updated_parity[i] = chr(updated_parity_data[i])
             else:
@@ -319,12 +372,28 @@ class Operations():
             status += str(server_number) + " : "
             status += filesystem.status(server_number)
         return status
+    
+    #REQUEST FOR THE STATUS OF FILE SYSTEM FROM SERVER
+    def server_status(self, server_number):
+        status = ""
+        status += str(server_number) + " : "
+        status += filesystem.status(server_number)
+        return status
 
 
-obj = Operations()
-obj.Initialize_My_FileSystem()
-b = obj.get_valid_data_block()
-obj.update_data_block(b, "hello world!")
+#------------------------------------------------------------ obj = Operations()
+#------------------------------------------------ obj.Initialize_My_FileSystem()
+#------------------------------------------------ b = obj.get_valid_data_block()
+#----------------------------------------------------------- #obj.print_pnodes()
+#-------------------------------------- obj.update_data_block(b, "hello world!")
+#---------------------------------------------------- print obj.server_status(3)
+#---------------------------------------------------- print obj.server_status(4)
+#------------------------------------------------ c = obj.get_valid_data_block()
+#----------------------------------------------------------- #obj.print_pnodes()
+#------------------------------------- obj.update_data_block(c, "hello world!2")
+#---------------------------------------------------- print obj.server_status(0)
+#---------------------------------------------------- print obj.server_status(4)
+
 #--------------------------------- obj.update_data_block(b, "hello wsdaf orld!")
 #------------------------------ obj.update_data_block(b, "hellsadfasd o world!")
 #-------------------------- obj.update_data_block(b, "hello wosdfasd as dfrld!")
