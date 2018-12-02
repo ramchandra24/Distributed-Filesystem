@@ -1,4 +1,3 @@
-import argparse
 import FileSystem
 import config
 
@@ -10,17 +9,18 @@ def Initialize():
 	delay = int(raw_input("Enter delay value : "))
 	config.SLEEP_TIME = delay
 	while (True):
-		startpoint = raw_input("UserInterface: Please enter 4 digit starting port number: ")
+		startpoint = raw_input("UserInterface: Please enter 4 digit starting port number : ")
 		try:
-   			val = int(startpoint)
    			if len(startpoint) == 4:
-   				config.SERVER_PORT_BEGIN = startpoint
-   				raw_input("UserInterface: Press enter after starting the servers.")
+   				config.SERVER_PORT_BEGIN = int(startpoint)
+   				print "new serv", config.SERVER_PORT_BEGIN
+   				raw_input("UserInterface: Press enter after starting the servers : ")
    				FileSystem.Initialize_My_FileSystem()
    				break
    			print ("The length is not 4!")
 		except ValueError:
    			print("That's not an Integer!")
+   	return
    			
    			
    			
@@ -47,8 +47,7 @@ def main():
 				link(input_array)
 			if input_array[0] == "status":
 				print status()
-# 			else: print ("Invalid input!!!1")
-		else: print ("Invalid input!!!")
+	return
 
 
 def mkdir(input_array):
@@ -59,6 +58,7 @@ def mkdir(input_array):
 		interface.mkdir(input_array[1])
 	except Exception as error:
 		print error
+	return
 	
 
 
@@ -71,7 +71,7 @@ def create(input_array):
 		interface.create(input_array[1])
 	except Exception as error:
 		print error
-	
+	return
 
 #WRITE TO FILE
 def write(input_array):
@@ -84,7 +84,7 @@ def write(input_array):
 		interface.write(input_array[1], data, offset)
 	except Exception as error:
 		print error
-  
+  	return
 
 #READ
 def read(input_array):
@@ -100,6 +100,7 @@ def read(input_array):
 		return interface.read(input_array[1], offset, size)
 	except Exception as error:
 		print error
+	return
 
 
 #DELETE
@@ -111,7 +112,7 @@ def rm(input_array):
 		interface.rm(input_array[1])
 	except Exception as error:
 		print error
-
+	return
 
 #MOVING FILE
 def mv(input_array):
@@ -122,6 +123,7 @@ def mv(input_array):
 		interface.mv(input_array[1], input_array[2])
 	except Exception as error:
 		print error
+	return
 
 def link(input_array):
 	if len(input_array) < 3:
@@ -131,14 +133,16 @@ def link(input_array):
 		interface.link(input_array[1], input_array[2])
 	except Exception as error:
 		print error
+	return
 	
 #CHECK STATUS
 def status():
 	return (interface.status())
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
 	Initialize()
 	main()
+	
 
 

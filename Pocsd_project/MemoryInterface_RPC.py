@@ -17,16 +17,17 @@ numservers = config.NUM_OF_SERVERS
 class Initialize():
     def __init__(self):
         print "Initializing memory on RPC"
+        return
 
 #OPERATIONS ON FILE SYSTEM
 class Operations():
-    def __init__(self):
+    def Initialize_My_FileSystem(self):
         #POINTER TO SERVER OBJECT
         self.startpoint = config.SERVER_PORT_BEGIN
         self.memory_server = []
         try:
             for i in range(self.startpoint, (self.startpoint + numservers)):
-                print "connecting to port ", i
+                print "Connecting to Server ", i
                 self.memory_server.append(ClientRPC.ServerProxy("http://localhost:" + str(i) + "/", allow_none=True))
         except (ClientError, SocketError) as error:
             print ("MemoryInterface_RPC Error: "), error

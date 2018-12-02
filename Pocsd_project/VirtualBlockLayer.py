@@ -14,8 +14,9 @@ class Operations():
     def Initialize_My_FileSystem(self):
         print("Filesystem Initializing......")
         for server_number in range(self.numservers):
-            print("Disk " + str(server_number) + " initialized!")
+            print("Initializing Disk " + str(server_number))
             Memory.Initialize()
+        filesystem.Initialize_My_FileSystem()
         print("Filesystem Initialized!")
         return
 
