@@ -28,8 +28,13 @@ class RaidServer():
 if __name__ == "__main__":
     #server_port = config.SERVER_PORT_BEGIN
     server_port = 8000
-    if len(sys.argv) > 1:
-        server_port = int(sys.argv[1])
+    try:
+        if len(sys.argv) > 1:
+            server_port = int(sys.argv[1])
+    except Exception as err:
+        print err
+        print "Port defaulted to ", server_port
+    
     server = RaidServer(server_port)
     server_handle = threading.Thread(target=server.start_server, args = ( ))
     server_handle.start()
