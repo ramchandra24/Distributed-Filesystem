@@ -6,14 +6,19 @@ interface = FileSystem.FileSystemOperations()
 
 def Initialize():
 	print "Number of Data Servers : ", config.NUM_OF_SERVERS
-	delay = int(raw_input("Enter delay value : "))
+	delay = 0
+	try:
+		delay = int(raw_input("Enter delay value : "))
+	except Exception as err:
+		print err
+		print "Delay defaulted to ", delay
 	config.SLEEP_TIME = delay
 	while (True):
-		startpoint = raw_input("UserInterface: Please enter 4 digit starting port number : ")
 		try:
+			startpoint = raw_input("Please enter 4 digit starting port number : ")
    			if len(startpoint) == 4:
    				config.SERVER_PORT_BEGIN = int(startpoint)
-   				raw_input("UserInterface: Press enter after starting the servers : ")
+   				raw_input("Press enter after starting the servers : ")
    				FileSystem.Initialize_My_FileSystem()
    				break
    			print ("The length is not 4!")
@@ -77,9 +82,9 @@ def write(input_array):
 	if len(input_array) < 4:
 		print "Incorrect input"
 		return
-	offset = int(input_array[2])
-	data = ' '.join(input_array[3:])
 	try:
+		offset = int(input_array[2])
+		data = ' '.join(input_array[3:])
 		interface.write(input_array[1], data, offset)
 	except Exception as error:
 		print error
@@ -89,13 +94,11 @@ def write(input_array):
 def read(input_array):
 	offset = 0
 	size = -1
-	if len(input_array) > 2:
-		offset = int(input_array[2])
-	
-	if len(input_array) > 3:
-		size = int(input_array[3])
-		
 	try:
+		if len(input_array) > 2:
+			offset = int(input_array[2])
+		if len(input_array) > 3:
+			size = int(input_array[3])
 		return interface.read(input_array[1], offset, size)
 	except Exception as error:
 		print error
